@@ -61,7 +61,10 @@ public:
 
             CheckAloneOperators(content, i);
             continue;
-        }   
+        }
+
+        _tokens.push_back({TokenType::C_EOF, ""});
+        LOG("EOF REACHED\n");
     }  
 
 private:

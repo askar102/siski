@@ -50,15 +50,12 @@ public:
 
             if (std::isdigit(content[i])) {
                 CheckDigit(content, i);
-                continue;
             }
 
 
             // check exp. operators ->  keywords 
             if (std::isalpha(content[i])) {
-                printf("pozda%c\n", content[i]);
                 CheckAlpha(content, i);
-                continue;
             }
             
 
@@ -78,8 +75,6 @@ private:
                 value += content[i];
                 ++i;
             }
-            // FIXME: kostil
-            --i;
 
             _tokens.push_back({TokenType::INT_LITERAL, value});
 
@@ -91,7 +86,7 @@ private:
         if (std::isalpha(content[i])) {
             std::string value;
 
-            while (i < content.size() && (std::isalnum(content[i])) || content[i] == '_') {
+            while (i < content.size() && (std::isalnum(content[i]) || content[i] == '_')) {
                 value += content[i];
                 ++i;
             }
@@ -230,11 +225,59 @@ private:
     }
 
     void CheckKeywords(const std::string& keyword) {
-        // if (!keyword.empty()) {
-        //     if (keyword == "if") {
-        //         return;
-        //     }
-        // }
+        if (!keyword.empty()) {
+            if (keyword == "if") {
+                _tokens.push_back({TokenType::IF, "if"});
+                LOG("IF: if\n");
+                return;
+            }
+            else if (keyword == "else") {
+                _tokens.push_back({TokenType::ELSE, "else"});
+                LOG("ELSE: else\n");
+                return;
+            }
+            else if (keyword == "goto") {
+                _tokens.push_back({TokenType::GOTO, "goto"});
+                LOG("GOTO: goto\n");
+                return;
+            }
+            else if (keyword == "label") {
+                _tokens.push_back({TokenType::LABEL, "label"});
+                LOG("LABEL: label\n");
+                return;
+            }
+
+            else if (keyword == "int") {
+                _tokens.push_back({TokenType::INT, "int"});
+                LOG("INT: int\n");
+                return;
+            }
+            else if (keyword == "void") {
+                _tokens.push_back({TokenType::VOID, "void"});
+                LOG("VOID: void\n");
+                return;
+            }
+
+            else if (keyword == "func") {
+                _tokens.push_back({TokenType::FUNC, "func"});
+                LOG("FUNC: func\n");
+                return;
+            }
+
+            else if (keyword == "return") {
+                _tokens.push_back({TokenType::RETURN, "return"});
+                LOG("RETURN: return\n");
+                return;
+            }
+
+            // IDENT CHECK
+            else {
+                _tokens.push_back({TokenType::IDENTIFIER, keyword});
+                LOG("INDENT: %s\n", keyword.c_str());
+                return;
+            }
+        }
+
         return;
     }
 

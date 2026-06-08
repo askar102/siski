@@ -1,10 +1,12 @@
 #include <cctype>
 #include <cstdio>
 #include <string>
-#include <system_error>
 #include <vector>
 #include <fstream>
 #include <utility>
+
+#include "c.h"
+
 
 // SISKI COMPILER
 
@@ -292,11 +294,25 @@ private:
 
 class Parser {
 public:
-    Parser(const std::vector<std::pair<TokenType, std::string>>& tokens) : _tokens(tokens) {}
+    Parser(const std::vector<std::pair<TokenType, std::string>>& tokens) : _tokens(tokens), _currentToken(0) {}
 
-    void Parse() {
-        
+    std::vector<std::unique_ptr<FunctionAST>>& ParseProgram() {
+        std::vector<std::unique_ptr<FunctionAST>> functions;
+
+        while(Current().first != TokenType::C_EOF) {
+            if (Current().first == TokenType::FUNC) {
+                functions.push_back(ParseFunction());
+            }
+
+            else {
+                fprintf(stderr, "PLS WRITE ONLY FUNCTION IN GLOBAL BLOCK!\n");
+                exit(0);
+            }
+        }
+
+        return functions;
     }
+    
 private:
     size_t _currentToken;
     const std::vector<std::pair<TokenType, std::string>>& _tokens;

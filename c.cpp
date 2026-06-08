@@ -29,7 +29,7 @@ enum TokenType {
     // expression operators
     ASSIGN, PLUS, MINUS, STAR, SLASH, AMPERSAND,
     // condition operators
-    EQUAL, LESS, GREATER,
+    EQUAL, LESS, GREATER, EQUAL_AND_LESS, EQUAL_AND_GREATER,
 
 
     LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, SEMICOLON, COMMA,
@@ -179,6 +179,46 @@ private:
             case '&': {
                 _tokens.push_back({TokenType::AMPERSAND, "&"});
                 LOG("AMPERSAND: &\n");
+                break;
+            }
+
+            case '=': {
+                if (i < content.size() && content[i+1] == '=') {
+                    _tokens.push_back({TokenType::EQUAL, "=="});
+                    LOG("EQUAL: ==\n");
+                    ++i;
+                    break;
+                }
+
+                _tokens.push_back({TokenType::ASSIGN, "="});
+                LOG("ASSIGN: =\n");
+                break;
+            }
+
+            case '<': {
+                // todo =<
+                if (i < content.size() && content[i+1] == '=') {
+                    _tokens.push_back({TokenType::EQUAL_AND_LESS, "<="});
+                    LOG("QUAL_AND_LESS: <=\n");
+                    ++i;
+                    break;
+                }
+
+                _tokens.push_back({TokenType::LESS, "<"});
+                LOG("LESS: <\n");
+                break;
+            }
+
+            case '>': {
+                if (i < content.size() && content[i+1] == '=') {
+                    _tokens.push_back({TokenType::EQUAL_AND_GREATER, ">="});
+                    LOG("QUAL_AND_GREATER: >=\n");
+                    ++i;
+                    break;
+                }
+
+                _tokens.push_back({TokenType::GREATER, ">"});
+                LOG("GREATER: >\n");
                 break;
             }
 

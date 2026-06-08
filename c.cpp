@@ -1,6 +1,7 @@
 #include <cctype>
 #include <cstdio>
 #include <string>
+#include <system_error>
 #include <vector>
 #include <fstream>
 #include <utility>
@@ -66,6 +67,10 @@ public:
         _tokens.push_back({TokenType::C_EOF, ""});
         LOG("EOF REACHED\n");
     }  
+
+    const std::vector<std::pair<TokenType, std::string>>& GetTokens() const {
+        return _tokens;
+    }
 
 private:
     std::vector<std::pair<TokenType, std::string>> _tokens;
@@ -282,6 +287,39 @@ private:
         }
 
         return;
+    }
+};
+
+class Parser {
+public:
+    Parser(const std::vector<std::pair<TokenType, std::string>>& tokens) : _tokens(tokens) {}
+
+    void Parse() {
+        
+    }
+private:
+    size_t _currentToken;
+    const std::vector<std::pair<TokenType, std::string>>& _tokens;
+
+    const std::pair<TokenType, std::string>& Current() {
+        return _tokens[_currentToken];
+    }
+
+    const std::pair<TokenType, std::string>& Except(TokenType type) {
+        if (Current().first != type) {
+            fprintf(stderr, "PIZDA: SYNTAX ERROR AT TOKEN NUMBER %d\n", _currentToken);
+            exit(1);
+        }
+
+        return _tokens[_currentToken++];
+    }
+
+    const std::pair<TokenType, std::string>& Peek(size_t offset = 1) {
+        if (_currentToken + offset <= _tokens.size()) {
+            return _tokens.back();
+        }
+
+        return _tokens[_currentToken + offset];
     }
 
 };

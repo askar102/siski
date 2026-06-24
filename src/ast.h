@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 class Node {
 protected:
@@ -13,7 +14,22 @@ public:
 };
 
 
-struct RootNode {
-    
+class RootNode : public Node {
+private:
+    // todo: add function node
+    std::vector<std::unique_ptr<Node>> _funcs; 
 
+public:
+    RootNode(std::vector<std::unique_ptr<Node>> funcs) {
+        _parent = this; 
+
+        for (auto& func : funcs) {
+            if (func) 
+            {
+                func->set_parent(this);
+                _funcs.push_back(std::move(func));
+            }
+            
+        }
+    }
 };

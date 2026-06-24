@@ -10,6 +10,7 @@ enum TokenType {
     // keywords
     IF, ELSE, 
     GOTO, LABEL,
+    LET,
     INT, VOID,
     FUNC, RETURN,
 

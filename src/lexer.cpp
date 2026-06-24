@@ -1,18 +1,18 @@
 #include "lexer.h"
 
 void Lexer::Tokenize(const std::string& content) {
-    for (size_t i = 0; i <= content.size()-1; ++i) {
+    for (size_t i = 0; i < content.size(); ++i) {
         if (std::isspace(content[i])) {
             continue;
         }
 
-        if (std::isdigit(content[i])) {
+        else if (std::isdigit(content[i])) {
             CheckDigit(content, i);
         }
 
 
         // check exp. operators ->  keywords 
-        if (std::isalpha(content[i])) {
+        else if (std::isalpha(content[i])) {
             CheckAlpha(content, i);
         }
         
@@ -70,7 +70,7 @@ void Lexer::CheckAloneOperators(const std::string& content, size_t& i) {
         case '-': {
             if (i < content.size() && content[i+1] == '>') {
                 _tokens.push_back({TokenType::FUNC_RETURN_TYPE_OP, "->"});
-                LOG("FUNC_RETURN_TYPE_OP: >=\n");
+                LOG("FUNC_RETURN_TYPE_OP: ->\n");
                 ++i;
                 break;
             }
@@ -219,6 +219,12 @@ void Lexer::CheckKeywords(const std::string& keyword) {
         else if (keyword == "label") {
             _tokens.push_back({TokenType::LABEL, "label"});
             LOG("LABEL: label\n");
+            return;
+        }
+
+        else if (keyword == "let") {
+            _tokens.push_back({TokenType::LET, "let"});
+            LOG("LET: let\n");
             return;
         }
 

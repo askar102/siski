@@ -1,5 +1,6 @@
 #include <cctype>
 #include <cstdio>
+#include <memory>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -153,7 +154,7 @@ private:
 
             case '}': {
                 _tokens.push_back({TokenType::RBRACE, "}"});
-                LOG("LBRACE: }\n");
+                LOG("RBRACE: }\n");
                 break;
             }
 
@@ -296,7 +297,7 @@ class Parser {
 public:
     Parser(const std::vector<std::pair<TokenType, std::string>>& tokens) : _tokens(tokens), _currentToken(0) {}
 
-    std::vector<std::unique_ptr<FunctionAST>>& ParseProgram() {
+    std::vector<std::unique_ptr<FunctionAST>> ParseProgram() {
         std::vector<std::unique_ptr<FunctionAST>> functions;
 
         while(Current().first != TokenType::C_EOF) {
@@ -312,8 +313,93 @@ public:
 
         return functions;
     }
-    
+
 private:
+    std::unique_ptr<FunctionAST> ParseFunction() {
+        Except(TokenType::FUNC);
+
+        // proto - name, args
+        auto proto = ParsePrototype();
+
+        // body - Expr list
+        auto body = ParseBlock();
+
+        return std::make_unique<FunctionAST>(std::move(proto), std::move(body));
+    }
+
+
+    std::unique_ptr<PrototypeAST> ParsePrototype() {
+        auto ident = Except(TokenType::IDENTIFIER);
+        std::string funcName = ident.second;
+
+        Except(TokenType::LPAREN);
+
+        std::vector<std::string> args;
+        while (Current().first != TokenType::RPAREN) {
+            Except(TokenType::INT);
+
+            std::string argName = Except(TokenType::IDENTIFIER).second;
+            args.push_back(argName);
+
+            if (Current().first == TokenType::COMMA) {
+                Except(TokenType::COMMA);
+            }
+        }
+
+        Except(TokenType::RPAREN);  
+
+        return std::make_unique<PrototypeAST>(funcName, std::move(args));   
+    }
+
+    std::unique_ptr<ExprAST> ParseBlock() {
+        Except(TokenType::LBRACE);
+
+        std::unique_ptr<ExprAST> lastExpr = nullptr;
+
+        while (Current().first != TokenType::RBRACE) {
+            lastExpr = ParseExpression();
+
+            Except(TokenType::SEMICOLON);
+        }
+
+        Except(TokenType::RBRACE);
+        return lastExpr;
+    }   
+
+    std::unique_ptr<ExprAST> ParseExpression() {
+        // number flow
+        if (Current().first == TokenType::INT_LITERAL) {
+            auto token = Except(TokenType::INT_LITERAL);
+            return std::make_unique<NumberExprAST>(std::stoul(token.second));
+        }
+
+        if (Current().first == TokenType::IDENTIFIER) {
+            auto token = Except(TokenType::IDENTIFIER);
+
+            if (Current().first == TokenType::LPAREN) {
+                Except(TokenType::LPAREN);
+                std::vector<std::unique_ptr<ExprAST>> callArgs;
+
+                while (Current().first != TokenType::RPAREN) {
+                    callArgs.push_back(ParseExpression());
+                    if (Current().first == TokenType::COMMA) Except(TokenType::COMMA);
+                }
+
+                Except(TokenType::RPAREN);
+
+                return std::make_unique<CallExprAST>(token.second, std::move(callArgs));
+
+            }
+
+            return std::make_unique<VariableExprAST>(token.second);
+
+        }
+
+        std::printf("Unknown token in expression: %s\n", Current().second.c_str());
+        exit(1);
+    }
+    
+
     size_t _currentToken;
     const std::vector<std::pair<TokenType, std::string>>& _tokens;
 
@@ -331,7 +417,7 @@ private:
     }
 
     const std::pair<TokenType, std::string>& Peek(size_t offset = 1) {
-        if (_currentToken + offset <= _tokens.size()) {
+        if (_currentToken + offset >= _tokens.size()) {
             return _tokens.back();
         }
 
@@ -351,4 +437,7 @@ int main() {
 
     Lexer lex;
     lex.Tokenize(fileContent);
+
+    Parser par(lex.GetTokens());
+    par.ParseProgram();
 }

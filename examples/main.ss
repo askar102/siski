@@ -1,3 +1,5 @@
+/* This is example of loop in Siski */
+
 func main() -> int {
     let var_example: int = 10;
 

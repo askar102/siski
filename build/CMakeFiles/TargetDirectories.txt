@@ -1,3 +1,0 @@
-/mnt/d/User/Desktop/compiler/build/CMakeFiles/compiler.dir
-/mnt/d/User/Desktop/compiler/build/CMakeFiles/edit_cache.dir
-/mnt/d/User/Desktop/compiler/build/CMakeFiles/rebuild_cache.dir

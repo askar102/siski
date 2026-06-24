@@ -2,6 +2,15 @@
 
 void Lexer::Tokenize(const std::string& content) {
     for (size_t i = 0; i < content.size(); ++i) {
+        // comment checker
+        if (content[i] == '/' && content[i+1] == '*') {
+            i += 2;
+            while (i < content.size() && content[i] != '*' && content[i+1] != '/') {
+                i++;
+            }
+            i += 2;
+        }
+
         if (std::isspace(content[i])) {
             continue;
         }

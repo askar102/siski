@@ -68,6 +68,13 @@ void Lexer::CheckAloneOperators(const std::string& content, size_t& i) {
         }
 
         case '-': {
+            if (i < content.size() && content[i+1] == '>') {
+                _tokens.push_back({TokenType::FUNC_RETURN_TYPE_OP, "->"});
+                LOG("FUNC_RETURN_TYPE_OP: >=\n");
+                ++i;
+                break;
+            }
+
             _tokens.push_back({TokenType::MINUS, "-"});
             LOG("MINUS: -\n");
             break;
@@ -124,6 +131,12 @@ void Lexer::CheckAloneOperators(const std::string& content, size_t& i) {
         case ';': {
             _tokens.push_back({TokenType::SEMICOLON, ";"});
             LOG("SEMICOLON: ;\n");
+            break;
+        }
+
+        case ':': {
+            _tokens.push_back({TokenType::COLON, ":"});
+            LOG("COLON: :\n");
             break;
         }
 
@@ -229,6 +242,24 @@ void Lexer::CheckKeywords(const std::string& keyword) {
         else if (keyword == "return") {
             _tokens.push_back({TokenType::RETURN, "return"});
             LOG("RETURN: return\n");
+            return;
+        }
+
+        else if (keyword == "exC") {
+            _tokens.push_back({TokenType::EXTERN_C, "exC"});
+            LOG("EXTERN_C: exC\n");
+            return;
+        }
+
+        else if (keyword == "export") {
+            _tokens.push_back({TokenType::EXPORT_C, "export"});
+            LOG("EXPORT_C: export\n");
+            return;
+        }
+
+        else if (keyword == "as") {
+            _tokens.push_back({TokenType::AS_C, "as"});
+            LOG("AS_C: as\n");
             return;
         }
 

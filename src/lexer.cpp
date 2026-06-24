@@ -5,10 +5,11 @@ void Lexer::Tokenize(const std::string& content) {
         // comment checker
         if (content[i] == '/' && content[i+1] == '*') {
             i += 2;
-            while (i < content.size() && content[i] != '*' && content[i+1] != '/') {
+            while (i < content.size() && !(content[i] == '*' && content[i+1] == '/')) {
                 i++;
             }
             i += 2;
+            continue;
         }
 
         if (std::isspace(content[i])) {
@@ -17,12 +18,14 @@ void Lexer::Tokenize(const std::string& content) {
 
         else if (std::isdigit(content[i])) {
             CheckDigit(content, i);
+            continue;
         }
 
 
         // check exp. operators ->  keywords 
         else if (std::isalpha(content[i])) {
             CheckAlpha(content, i);
+            continue;
         }
         
 

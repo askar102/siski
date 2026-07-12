@@ -186,17 +186,43 @@ std::unique_ptr<FunctionCallNode> Parser::ParseFunctionCallStmt()
 
 std::unique_ptr<IfStatementNode> Parser::ParseIfStmt()
 {
+    Advance(); // Skip 'if'
 
+    Expect(TokenType::LPAREN);
+    std::unique_ptr<ExpressionNode> expr = ParseExpression();
+    Expect(TokenType::RPAREN);
+
+    std::unique_ptr<BlockNode> block;
+
+    if (Check(TokenType::LBRACE)) {
+        block = ParseBlock();
+    }
+
+     
+
+    
 }
 
 std::unique_ptr<VariableDeclNode> Parser::ParseVariableDeclaration()
 {
+    std::string var_type_name = Advance().text;
+    std::unique_ptr<TypeNode> var_type = std::make_unique<TypeNode>(var_type_name, false); // Idk about pointer now
+    std::string var_name = Advance().text;
+    std::unique_ptr<ExpressionNode> expr = nullptr;
+    if (Check(TokenType::ASSIGN))
+    {
+        Advance(); // skip =
+        expr = ParseExpression();
+    }
+    
+    Expect(TokenType::SEMICOLON);
+    return std::make_unique<VariableDeclNode>(std::move(var_type), var_name, expr);
 
 }
 
 std::unique_ptr<FuncDeclNode> Parser::ParseFunctionDeclaration()
 {
-
+    
 }
 
 std::unique_ptr<BlockNode> Parser::ParseBlock()
@@ -210,6 +236,5 @@ std::unique_ptr<BlockNode> Parser::ParseBlock()
         stmts.push_back(ParseStatement());
     }
 
-    Expect(TokenType::SEMICOLON);
     return std::make_unique<BlockNode>(std::move(stmts));
 }

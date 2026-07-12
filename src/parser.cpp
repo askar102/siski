@@ -42,4 +42,24 @@ Token Parser::Except(TokenType type)
     }
 }
 
-ExpressionNode Parser::ParseExpression() {}
+std::unique_ptr<ExpressionNode> Parser::ParseExpression()
+{
+    return pratt.ParseExpression(_curr_token_pos);
+}
+
+std::unique_ptr<ReturnStatement> Parser::ParseReturnStmt()
+{
+    Advance();
+    
+    std::unique_ptr<ExpressionNode> expr = nullptr;
+
+    if (!Match(TokenType::SEMICOLON)) {
+        expr = ParseExpression();
+    }
+
+    Except(TokenType::SEMICOLON);
+
+    return std::make_unique<ReturnStatement>(std::move(expr));
+}
+
+

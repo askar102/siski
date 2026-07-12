@@ -11,6 +11,8 @@
 
 #include "log.h"
 
+#include "pratt.h"
+
 // И так, у нас есть парсер.
 // Получается мы должны сделать вот что: 
 // 1. У него есть метод под каждую конструкцию (почти)
@@ -23,6 +25,7 @@ class Parser {
 protected:
     const std::vector<Token>& _tokens;
     size_t _curr_token_pos = 0;
+    PrattParser pratt;
 
     /* Посмотреть текущий токен */
     Token Peek() const;
@@ -39,6 +42,10 @@ protected:
     /* Если текущий токен нужного типа, то сьедаем. Иначе возвращаем ошибку. */
     /* Возвращает токен - тот, который проверил и пропустил вперед */
     Token Except(TokenType type);   
+
+    std::unique_ptr<ExpressionNode> ParseExpression();
+
+    std::unique_ptr<ReturnStatement> ParseReturnStmt();
 
 public:
     Parser(const std::vector<Token>& tokens)

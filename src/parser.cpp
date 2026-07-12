@@ -2,7 +2,7 @@
 #include "pratt.h"
 
 Parser::Parser(const std::vector<Token>& tokens)
-    : _tokens(tokens), pratt(std::make_unique<PrattParser>(tokens)) {}
+    : _tokens(tokens) {}
 
 Parser::~Parser() = default;
 
@@ -56,9 +56,93 @@ Token Parser::Expect(TokenType type)
     }
 }
 
+int32_t Parser::lbp(TokenType type) const
+{
+    switch(type) {
+        case TokenType::EQUAL:        
+        case TokenType::NOT_EQUAL:      
+        case TokenType::LESS:         
+        case TokenType::GREATER:       
+        case TokenType::LESS_EQUAL:    
+        case TokenType::GREATER_EQUAL:
+            return 5;
+        case TokenType::PLUS:
+        case TokenType::MINUS: return 10;
+        case TokenType::STAR:
+        case TokenType::SLASH: return 20;
+        default: return 0;
+    }
+}
+
+std::string Parser::opChar(TokenType t) const {
+    switch (t) {
+        case TokenType::PLUS:  return "+";
+        case TokenType::MINUS: return "-";
+        case TokenType::STAR:  return "*";
+        case TokenType::SLASH: return "/";
+        default: return "?";
+    }
+}
+
+std::unique_ptr<ExpressionNode> Parser::nud()
+{
+    Token t = Peek();
+    switch (t.type) {
+        case TokenType::NUMBER: {        
+            Advance();
+            return std::make_unique<NumberNode>(std::stoi(t.text));
+        }
+
+        case TokenType::MINUS: {
+            Advance();
+            return std::make_unique<UnaryNode>("-", parsePratt(100));
+        }
+
+        case TokenType::IDENTIFIER: {
+            Advance();
+            return std::make_unique<VariableRefNode>(t.text);
+        }
+
+        case TokenType::LPAREN: {
+            Advance();
+
+            std::unique_ptr<ExpressionNode> inner = parsePratt(0);
+
+            if (Peek().type != TokenType::RPAREN) 
+                throw std::runtime_error("Expected ')'");
+
+            Advance();
+            return inner;
+        }
+
+        default:
+            throw std::runtime_error("Unexpected token in nud");
+    }
+}
+
+std::unique_ptr<ExpressionNode> Parser::led(std::unique_ptr<ExpressionNode> left)
+{
+    Token t = Peek();
+    int32_t bp = lbp(t.type);
+    std::string op = opChar(t.type);
+    Advance(); 
+    std::unique_ptr<ExpressionNode> right = parsePratt(bp);
+    return std::make_unique<BinaryExpression>(std::move(left), op, std::move(right));
+}
+
+std::unique_ptr<ExpressionNode> Parser::parsePratt(int32_t rbp) {
+    std::unique_ptr<ExpressionNode> left = nud();
+    while (rbp < lbp(Peek().type)) {
+        left = led(std::move(left));
+    }
+    return left;
+}
+
+// END OF PRATT
+
 std::unique_ptr<ExpressionNode> Parser::ParseExpression()
 {
-    return pratt->ParseExpression(_curr_token_pos);
+    return parsePratt(0);
 }
 
 std::unique_ptr<StatementNode> Parser::ParseStatement()

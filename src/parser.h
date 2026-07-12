@@ -24,7 +24,6 @@ class Parser {
 protected:
     const std::vector<Token>& _tokens;
     size_t _curr_token_pos = 0;
-    std::unique_ptr<PrattParser> pratt;
 
     /* Посмотреть текущий токен */
     Token Peek() const;
@@ -62,6 +61,14 @@ protected:
 
     std::unique_ptr<BlockNode> ParseBlock();
     std::unique_ptr<ArgNode> ParseArg();
+
+    // PRATT
+
+    int32_t lbp(TokenType type) const;
+    std::string opChar(TokenType t) const;
+    std::unique_ptr<ExpressionNode> nud();
+    std::unique_ptr<ExpressionNode> led(std::unique_ptr<ExpressionNode> left);
+    std::unique_ptr<ExpressionNode> parsePratt(int32_t rbp);
     
 public:
     Parser(const std::vector<Token>& tokens);

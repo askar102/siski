@@ -56,7 +56,7 @@ public:
 };
 
 /* Function node */
-class FuncNode : public DeclarationNode {
+class FuncDeclNode : public DeclarationNode {
 private:
     std::string _name;
 
@@ -66,7 +66,7 @@ private:
     std::unique_ptr<BlockNode> _block;
 
 public:
-    FuncNode(std::string name, std::vector<std::unique_ptr<ArgNode>> args, std::unique_ptr<TypeNode> return_type, std::unique_ptr<BlockNode> block)
+    FuncDeclNode(std::string name, std::vector<std::unique_ptr<ArgNode>> args, std::unique_ptr<TypeNode> return_type, std::unique_ptr<BlockNode> block)
         : _name(name), _return_type(std::move(return_type)), _block(std::move(block)) 
         {
             /* Params */
@@ -91,6 +91,16 @@ public:
                 _block->set_parent(this);
             }
         }
+};
+
+class VariableDeclNode : public StatementNode {
+private:
+    std::unique_ptr<TypeNode> _type;
+    std::string _var_name;
+    std::unique_ptr<ExpressionNode> _init = nullptr;
+public:
+    VariableDeclNode(std::unique_ptr<TypeNode> type, std::string var_name, std::unique_ptr<ExpressionNode> init = nullptr)
+        : _type(std::move(type)), _var_name(var_name), _init(std::move(init)) {}
 };
 
 /* x = 1 */
@@ -207,10 +217,10 @@ public:
 class RootNode : public Node {
 private:
     // todo: add function node  
-    std::vector<std::unique_ptr<FuncNode>> _funcs; 
+    std::vector<std::unique_ptr<FuncDeclNode>> _funcs; 
 
 public:
-    RootNode(std::vector<std::unique_ptr<FuncNode>> funcs) {
+    RootNode(std::vector<std::unique_ptr<FuncDeclNode>> funcs) {
         _parent = this; 
 
         for (auto& func : funcs) {

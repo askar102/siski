@@ -36,6 +36,9 @@ protected:
     /* Проверить того ли типа текущий токен. Ничего не трогает */
     bool Check(TokenType type);
 
+    /* Проверяет того ли типа следующий токен. Ничего не трогает */
+    bool CheckNext(TokenType type);
+
     /* Если текущий токен нужного типа, сьесть его и вернуть true. Иначе не трогать и вернуть false */
     bool Match(TokenType type);
 
@@ -53,6 +56,10 @@ protected:
 
     std::unique_ptr<VariableAssignNode> ParseVariableAssign();
     std::unique_ptr<FunctionCallNode> ParseFunctionCallStmt();
+
+    std::unique_ptr<IfStatementNode> ParseIfStmt();
+    std::unique_ptr<VariableDeclNode> ParseVariableDeclaration();
+    std::unique_ptr<FuncDeclNode> ParseFunctionDeclaration();
     
 public:
     Parser(const std::vector<Token>& tokens)

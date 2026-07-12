@@ -30,6 +30,14 @@ bool Parser::Match(TokenType type)
     }
 }
 
+bool Parser::CheckNext(TokenType type)
+{
+    if (Peek().type != TokenType::C_EOF)
+    {
+        return _tokens[_curr_token_pos+1].type == type;
+    }
+}
+
 Token Parser::Expect(TokenType type) 
 {
     if (Peek().type == type) 
@@ -45,6 +53,50 @@ Token Parser::Expect(TokenType type)
 std::unique_ptr<ExpressionNode> Parser::ParseExpression()
 {
     return pratt.ParseExpression(_curr_token_pos);
+}
+
+std::unique_ptr<StatementNode> Parser::ParseStatement()
+{
+    if (Check(TokenType::IF)) {
+        ParseIfStmt();
+    }
+
+    if (Check(TokenType::GOTO)) {
+        ParseGotoStmt();
+    }
+
+    if (Check(TokenType::LABEL)) {
+        ParseLabelStmt();
+    }
+
+    if (Check(TokenType::RETURN)) {
+        ParseReturnStmt();
+    }
+
+    if (Check(TokenType::IDENTIFIER)) {
+        if (CheckNext(TokenType::IDENTIFIER)) {
+            // <type> <var_name> = 10
+            // <type> <func_name>(...) {}
+            TokenType type = _tokens[_curr_token_pos+2].type;
+
+            if (type == TokenType::LPAREN) {
+                ParseFunctionDeclaration();
+            }
+
+            else if (type == TokenType::ASSIGN) {
+                ParseVariableDeclaration();
+            }
+        }
+
+        // <func_name>(...)
+        if (CheckNext(TokenType::LPAREN)) {
+            ParseFunctionCallStmt();
+        }
+
+        if (CheckNext(TokenType::ASSIGN)) {
+            ParseVariableAssign();
+        }
+    }
 }
 
 std::unique_ptr<ReturnStatement> Parser::ParseReturnStmt()
@@ -123,3 +175,17 @@ std::unique_ptr<FunctionCallNode> Parser::ParseFunctionCallStmt()
     return std::make_unique<FunctionCallNode>(func_name, std::move(call_args));
 }
 
+std::unique_ptr<IfStatementNode> Parser::ParseIfStmt()
+{
+
+}
+
+std::unique_ptr<VariableDeclNode> Parser::ParseVariableDeclaration()
+{
+
+}
+
+std::unique_ptr<FuncDeclNode> Parser::ParseFunctionDeclaration()
+{
+
+}

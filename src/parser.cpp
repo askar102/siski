@@ -36,6 +36,8 @@ bool Parser::CheckNext(TokenType type)
     {
         return _tokens[_curr_token_pos+1].type == type;
     }
+
+    return false;
 }
 
 Token Parser::Expect(TokenType type) 
@@ -58,45 +60,48 @@ std::unique_ptr<ExpressionNode> Parser::ParseExpression()
 std::unique_ptr<StatementNode> Parser::ParseStatement()
 {
     if (Check(TokenType::IF)) {
-        ParseIfStmt();
+        return ParseIfStmt();
     }
 
     if (Check(TokenType::GOTO)) {
-        ParseGotoStmt();
+        return ParseGotoStmt();
     }
 
     if (Check(TokenType::LABEL)) {
-        ParseLabelStmt();
+        return ParseLabelStmt();
     }
 
     if (Check(TokenType::RETURN)) {
-        ParseReturnStmt();
+        return ParseReturnStmt();
     }
 
     if (Check(TokenType::IDENTIFIER)) {
         if (CheckNext(TokenType::IDENTIFIER)) {
             // <type> <var_name> = 10
             // <type> <func_name>(...) {}
+            // FIXME: hardcore, dont check EOF
             TokenType type = _tokens[_curr_token_pos+2].type;
 
             if (type == TokenType::LPAREN) {
-                ParseFunctionDeclaration();
+                return ParseFunctionDeclaration();
             }
 
             else if (type == TokenType::ASSIGN) {
-                ParseVariableDeclaration();
+                return ParseVariableDeclaration();
             }
         }
 
         // <func_name>(...)
         if (CheckNext(TokenType::LPAREN)) {
-            ParseFunctionCallStmt();
+            return ParseFunctionCallStmt();
         }
 
         if (CheckNext(TokenType::ASSIGN)) {
-            ParseVariableAssign();
+            return ParseVariableAssign();
         }
     }
+
+    throw std::runtime_error("Unknown statement, token: " + Peek().text);
 }
 
 std::unique_ptr<ReturnStatement> Parser::ParseReturnStmt()

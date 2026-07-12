@@ -10,13 +10,11 @@ enum TokenType {
     // keywords
     IF, ELSE, 
     GOTO, LABEL,
-    LET,
-    INT, VOID,
     FUNC, RETURN,
 
     // another
-    IDENTIFIER, INT_LITERAL, FUNC_RETURN_TYPE_OP, 
-    EXTERN_C, EXPORT_C, AS_C,
+    IDENTIFIER, INT_LITERAL, ARROW_OP, 
+    EXTERN_C,
 
     // expression operators
     ASSIGN, PLUS, MINUS, STAR, SLASH, AMPERSAND,

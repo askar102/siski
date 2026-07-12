@@ -25,9 +25,10 @@ class DeclarationNode : public Node {};
 /* Type node */
 class TypeNode : public Node {
 private:
-    CompilerType _type;
+    std::string _type;
+    bool _is_pointer = false;
 public:
-    TypeNode(CompilerType type) : _type(type) {}
+    TypeNode(std::string type, bool is_pointer) : _type(type), _is_pointer(is_pointer) {}
 };
 
 /* Argument node */
@@ -90,6 +91,23 @@ public:
             }
         }
 };
+
+/* x = 1 */
+class VariableAssignNode : public StatementNode {};
+
+/* If (1 > 0) { ... }*/
+class IfStatementNode : public StatementNode {};
+
+/* 1 + 1 */
+class BinaryExpression : public Node {};
+
+/* 1 == 1 */
+class ConditionalExpression : public Node {};
+
+/* goto label; label: */
+class GotoStatement : public StatementNode {};
+
+class FunctionCallNode : public StatementNode {};
 
 /* Main/Root node */
 class RootNode : public Node {

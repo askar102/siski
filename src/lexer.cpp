@@ -234,23 +234,6 @@ void Lexer::CheckKeywords(const std::string& keyword) {
             return;
         }
 
-        else if (keyword == "let") {
-            _tokens.push_back({TokenType::LET, "let"});
-            LOG("LET: let\n");
-            return;
-        }
-
-        else if (keyword == "int") {
-            _tokens.push_back({TokenType::INT, "int"});
-            LOG("INT: int\n");
-            return;
-        }
-        else if (keyword == "void") {
-            _tokens.push_back({TokenType::VOID, "void"});
-            LOG("VOID: void\n");
-            return;
-        }
-
         else if (keyword == "func") {
             _tokens.push_back({TokenType::FUNC, "func"});
             LOG("FUNC: func\n");
@@ -266,18 +249,6 @@ void Lexer::CheckKeywords(const std::string& keyword) {
         else if (keyword == "exC") {
             _tokens.push_back({TokenType::EXTERN_C, "exC"});
             LOG("EXTERN_C: exC\n");
-            return;
-        }
-
-        else if (keyword == "export") {
-            _tokens.push_back({TokenType::EXPORT_C, "export"});
-            LOG("EXPORT_C: export\n");
-            return;
-        }
-
-        else if (keyword == "as") {
-            _tokens.push_back({TokenType::AS_C, "as"});
-            LOG("AS_C: as\n");
             return;
         }
 

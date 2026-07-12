@@ -13,3 +13,7 @@ func main() -> int {
     label stop:
         return var_example;
 }
+
+U0 example() {
+    I64 lol = 10;
+}

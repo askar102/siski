@@ -16,6 +16,13 @@ public:
     Node* get_parent() const { return _parent; }
 };
 
+/* То, что выполняется пошагово */
+class StatementNode : public Node {};
+
+/* обьявленния */
+class DeclarationNode : public Node {};
+
+/* Type node */
 class TypeNode : public Node {
 private:
     CompilerType _type;
@@ -23,6 +30,7 @@ public:
     TypeNode(CompilerType type) : _type(type) {}
 };
 
+/* Argument node */
 class ArgNode : public Node {
 private:
     std::string _name;
@@ -35,19 +43,28 @@ public:
     ArgNode(std::string name, std::unique_ptr<TypeNode> type, std::unique_ptr<Node> defVal)
         : _name(name), _type(std::move(type)), _defaultValue(std::move(defVal)) {}
 };
-    
 
-class FuncNode : public Node {
+/* Block node */
+class BlockNode : public Node {
+private:
+    std::vector<std::unique_ptr<StatementNode>> _stmts;
+public:
+    BlockNode(std::vector<std::unique_ptr<StatementNode>> stmts) 
+        : _stmts(std::move(stmts)) {}
+};
+
+/* Function node */
+class FuncNode : public DeclarationNode {
 private:
     std::string _name;
 
-    std::vector<std::unique_ptr<Node>> _args;
+    std::vector<std::unique_ptr<ArgNode>> _args;
     
     std::unique_ptr<TypeNode> _return_type;
-    std::unique_ptr<Node> _block;
+    std::unique_ptr<BlockNode> _block;
 
 public:
-    FuncNode(std::string name, std::vector<std::unique_ptr<Node>> args, std::unique_ptr<TypeNode> return_type, std::unique_ptr<Node> block)
+    FuncNode(std::string name, std::vector<std::unique_ptr<ArgNode>> args, std::unique_ptr<TypeNode> return_type, std::unique_ptr<BlockNode> block)
         : _name(name), _return_type(std::move(return_type)), _block(std::move(block)) 
         {
             /* Params */
@@ -74,6 +91,7 @@ public:
         }
 };
 
+/* Main/Root node */
 class RootNode : public Node {
 private:
     // todo: add function node

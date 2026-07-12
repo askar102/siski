@@ -37,7 +37,7 @@ void Lexer::Tokenize(const std::string& content) {
     LOG("EOF REACHED\n");
 }
 
-const std::vector<std::pair<TokenType, std::string>>& Lexer::GetTokens() const {
+const std::vector<Token>& Lexer::GetTokens() const {
     return _tokens;
 }
 

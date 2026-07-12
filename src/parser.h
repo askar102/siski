@@ -19,22 +19,23 @@
 
 class Parser {
 private:
-    std::vector<std::pair<TokenType, std::string>> _tokens;
-    size_t _curr_token_pos;
+    std::vector<Token> _tokens;
+    size_t _curr_token_pos = 0;
 
-    void SetTokens(std::vector<std::pair<TokenType, std::string>> tokens);
+    void SetTokens(std::vector<Token>& tokens);
 
     /* Посмотреть текущий токен */
-    TokenType Peek() const;
+    Token Peek() const;
 
     /* Взять текущий токен и сдвинуть позицию на один вперед. Возвращает токен который он только что "сьел" */
-    TokenType Advance();
+    Token Advance();
 
     /* Проверить того ли типа текущий токен. Ничего не трогает */
     bool Check(TokenType type);
 
+    /* Если текущий токен нужного типа, сьесть его и вернуть true. Иначе не трогать и вернуть false */
+    bool Match(TokenType type);
 
-    void Match();
     void Except();   
 
 };

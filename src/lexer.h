@@ -38,10 +38,10 @@ public:
     Lexer() = default;
 
     void Tokenize(const std::string& content);
-    const std::vector<std::pair<TokenType, std::string>>& GetTokens() const;
+    const std::vector<Token>& GetTokens() const;
 
 private:
-    std::vector<std::pair<TokenType, std::string>> _tokens;
+    std::vector<Token> _tokens;
 
     void CheckDigit(const std::string& content, size_t& i);
 

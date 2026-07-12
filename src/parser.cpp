@@ -1,17 +1,19 @@
 #include "parser.h"
 
-TokenType Parser::Peek() const 
+Token Parser::Peek() const 
 {
-    return _tokens[_curr_token_pos].first;
+    return _tokens[_curr_token_pos];
 }
 
-TokenType Parser::Advance() 
+Token Parser::Advance() 
 {
-    return _tokens[_curr_token_pos++].first;    
+    return _tokens[_curr_token_pos++];    
 } 
 
 bool Parser::Check(TokenType type)
 {
-    return Peek()
+    return true ? Peek().type == type : false;
 } 
 
+bool Parser::Match(TokenType type) {
+}

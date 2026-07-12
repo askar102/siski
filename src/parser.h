@@ -21,10 +21,8 @@
 
 class Parser {
 private:
-    std::vector<Token> _tokens;
+    const std::vector<Token>& _tokens;
     size_t _curr_token_pos = 0;
-
-    void SetTokens(std::vector<Token>& tokens);
 
     /* Посмотреть текущий токен */
     Token Peek() const;
@@ -44,4 +42,9 @@ private:
 
     ExpressionNode ParseExpression();
 
+public:
+    Parser(const std::vector<Token>& tokens)
+        : _tokens(tokens) {}
+
+    void ParseProgram();
 };

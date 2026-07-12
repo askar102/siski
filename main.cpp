@@ -1,4 +1,5 @@
 #include "src/lexer.h"
+#include "src/parser.h"
 #include "src/log.h"
 
 
@@ -14,6 +15,6 @@ int main() {
     Lexer lex;
     lex.Tokenize(fileContent);
 
-//     Parser par(lex.GetTokens());
-//     par.ParseProgram();
+    Parser par(lex.GetTokens());
+    par.ParseProgram();
 }

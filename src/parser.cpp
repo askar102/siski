@@ -1,5 +1,7 @@
 #include "parser.h"
 
+void Parser::ParseProgram() {}
+
 Token Parser::Peek() const 
 {
     return _tokens[_curr_token_pos];

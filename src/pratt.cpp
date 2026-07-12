@@ -4,12 +4,12 @@
 int32_t PrattParser::lbp(TokenType type) const
 {
     switch(type) {
-        case TokenType::EQUAL:              // ==
-        case TokenType::NOT_EQUAL:          // !=
-        case TokenType::LESS:               // 
-        case TokenType::GREATER:            // >
-        case TokenType::LESS_EQUAL:         // <=
-        case TokenType::GREATER_EQUAL:      // >=
+        case TokenType::EQUAL:        
+        case TokenType::NOT_EQUAL:      
+        case TokenType::LESS:         
+        case TokenType::GREATER:       
+        case TokenType::LESS_EQUAL:    
+        case TokenType::GREATER_EQUAL:
             return 5;
         case TokenType::PLUS:
         case TokenType::MINUS: return 10;

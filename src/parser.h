@@ -40,8 +40,6 @@ protected:
     /* Возвращает токен - тот, который проверил и пропустил вперед */
     Token Except(TokenType type);   
 
-    ExpressionNode ParseExpression();
-
 public:
     Parser(const std::vector<Token>& tokens)
         : _tokens(tokens) {}

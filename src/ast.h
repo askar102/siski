@@ -22,6 +22,9 @@ class StatementNode : public Node {};
 /* обьявленния */
 class DeclarationNode : public Node {};
 
+/* типо ретурнит что то */
+class ExpressionNode : public Node {};
+
 /* Type node */
 class TypeNode : public Node {
 private:
@@ -46,7 +49,7 @@ public:
 };
 
 /* Block node */
-class BlockNode : public Node {
+class BlockNode : public StatementNode {
 private:
     std::vector<std::unique_ptr<StatementNode>> _stmts;
 public:
@@ -93,26 +96,67 @@ public:
 };
 
 /* x = 1 */
-class VariableAssignNode : public StatementNode {};
+class VariableAssignNode : public StatementNode {
+private:
+    std::string _var_name;
+    std::unique_ptr<ExpressionNode> _value;
+public:
+    VariableAssignNode(std::string var_name, std::unqiue_ptr<ExpressionNode> value)
+        : _var_name(var_name), _value(std::move(value)) {}
+};
 
 /* If (1 > 0) { ... }*/
-class IfStatementNode : public StatementNode {};
+class IfStatementNode : public StatementNode {
+private:
+    std::unique_ptr<ExpressionNode> _condition;
+    std::unique_ptr<StatementNode> _then_block; /* ну типо blockNode же тоже стейтмент */
+    std::unique_ptr<StatementNode> _else_block;
 
-/* 1 + 1 */
-class BinaryExpression : public Node {};
+public:
+    IfStatementNode(std::unique_ptr<ExpressionNode> condition, std::unique_ptr<StatementNode> then_block, std::unique_ptr<StatementNode> else_block)
+        : _condition(std::move(condition)), _then_block(std::move(then_block)), _else_block(std::move(else_block)) {}
+};
 
-/* 1 == 1 */
-class ConditionalExpression : public Node {};
+// /* 1 == 1 */
+// class ConditionalExpression : public Node {};
 
 /* goto label; label: */
 class GotoStatement : public StatementNode {};
 
-class FunctionCallNode : public StatementNode {};
+class FunctionCallNode : public StatementNode {
+private:
+    std::string _func_name;
+    std::unique_ptr<ExpressionNode> _call_args;
+
+public:
+    FunctionCallNode(std::string func_name, std::unique_ptr<ExpressionNode> call_args)
+        : _func_name(func_name), _call_args(std::move(_call_args)) {}
+};
+
+class IntLiteralNode : public ExpressionNode {
+private:
+    int _val;
+public:
+    IntLiteralNode(int val)
+        : _val(val) {}
+};
+
+/* 1 + 1 */
+class BinaryExpression : public ExpressionNode {
+private:
+    std::unique_ptr<ExpressionNode> _left;
+    std::string _op;
+    std::unique_ptr<ExpressionNode>> _right;
+
+public:
+    BinaryExpression(std::unique_ptr<ExpressionNode> left, std::string op, std::unique_ptr<ExpressionNode> right)
+        : _left(std::move(left)), _op(op), _right(std::move(right)) {}
+};
 
 /* Main/Root node */
 class RootNode : public Node {
 private:
-    // todo: add function node
+    // todo: add function node  
     std::vector<std::unique_ptr<FuncNode>> _funcs; 
 
 public:

@@ -167,6 +167,24 @@ public:
         : _left(std::move(left)), _op(op), _right(std::move(right)) {}
 };
 
+
+class ReturnStatement : public StatementNode {
+private:
+    std::unique_ptr<ExpressionNode> _return_val;
+public:
+    ReturnStatement(std::unique_ptr<ExpressionNode> return_val)
+        : _return_val(std::move(return_val)) {}
+};
+
+/* maybe */
+class ExternStatement : public StatementNode {
+private:
+    std::string _row_code;
+public:
+    ExternStatement(std::string row_code)
+        : _row_code(row_code) {}
+};
+ 
 /* Main/Root node */
 class RootNode : public Node {
 private:

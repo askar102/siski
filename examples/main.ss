@@ -14,6 +14,7 @@ func main() -> int {
         return var_example;
 }
 
+%FUCK_COMPILER_FLAG
 U0 example() {
     I64 lol = 10;
 }

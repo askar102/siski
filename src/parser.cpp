@@ -1,6 +1,10 @@
 #include "parser.h"
+#include "pratt.h"
 
-void Parser::ParseProgram() {}
+Parser::Parser(const std::vector<Token>& tokens)
+    : _tokens(tokens), pratt(std::make_unique<PrattParser>(tokens)) {}
+
+Parser::~Parser() = default;
 
 Token Parser::Peek() const 
 {
@@ -78,16 +82,7 @@ std::unique_ptr<StatementNode> Parser::ParseStatement()
     if (Check(TokenType::IDENTIFIER)) {
         if (CheckNext(TokenType::IDENTIFIER)) {
             // <type> <var_name> = 10
-            // <type> <func_name>(...) {}
-            // FIXME: hardcore, dont check EOF
-            TokenType type = _tokens[_curr_token_pos+2].type;
-
-            if (type == TokenType::LPAREN) {
-                return ParseFunctionDeclaration();
-            }
-            else {
-                return ParseVariableDeclaration();
-            }
+            return ParseVariableDeclaration();
         }
 
         // <func_name>(...)
@@ -283,4 +278,15 @@ std::unique_ptr<ArgNode> Parser::ParseArg()
     }
     
     return std::make_unique<ArgNode>(var_name, std::move(var_type), std::move(expr));
+}
+
+std::unique_ptr<RootNode> Parser::ParseProgram()
+{
+    std::vector<std::unique_ptr<FuncDeclNode>> funcs;
+
+    while (!Check(TokenType::C_EOF)) {
+        funcs.push_back(ParseFunctionDeclaration());
+    }
+
+    return std::make_unique<RootNode>(std::move(funcs));
 }

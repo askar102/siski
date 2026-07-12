@@ -16,10 +16,10 @@ int main() {
     Lexer lex;
     lex.Tokenize(fileContent);
 
-    PrattParser par(lex.GetTokens());
-    size_t curr = 0;
-    par.ParseExpression(curr);
+    // PrattParser par(lex.GetTokens());
+    // size_t curr = 0;
+    // par.ParseExpression(curr);
 
-    // Parser par(lex.GetTokens());
-    // par.ParseProgram();
+    Parser par(lex.GetTokens());
+    par.ParseProgram();
 }

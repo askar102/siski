@@ -11,8 +11,6 @@
 
 #include "log.h"
 
-#include "pratt.h"
-
 // И так, у нас есть парсер.
 // Получается мы должны сделать вот что: 
 // 1. У него есть метод под каждую конструкцию (почти)
@@ -20,6 +18,7 @@
 // 3. Эти методы будут собирать AST ноды вьедино
 // 4. Старт программы у нас будет с Root ноды
 
+class PrattParser; 
 
 class Parser {
 protected:
@@ -65,8 +64,8 @@ protected:
     std::unique_ptr<ArgNode> ParseArg();
     
 public:
-    Parser(const std::vector<Token>& tokens)
-        : _tokens(tokens), pratt(tokens) {}
+    Parser(const std::vector<Token>& tokens);
+    ~Parser();
 
-    void ParseProgram();
+    std::unique_ptr<RootNode> ParseProgram();
 };

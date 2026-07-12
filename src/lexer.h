@@ -13,7 +13,7 @@ enum TokenType {
     RETURN,
 
     // another
-    IDENTIFIER, INT_LITERAL, ARROW_OP, 
+    IDENTIFIER, NUMBER, ARROW_OP, 
     EXTERN_C,
 
     // expression operators

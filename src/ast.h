@@ -147,11 +147,11 @@ public:
         : _func_name(func_name), _call_args(std::move(_call_args)) {}
 };
 
-class IntLiteralNode : public ExpressionNode {
+class NumberNode : public ExpressionNode {
 private:
     int _val;
 public:
-    IntLiteralNode(int val)
+    NumberNode(int val)
         : _val(val) {}
 };
 

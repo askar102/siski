@@ -50,7 +50,7 @@ void Lexer::CheckDigit(const std::string& content, size_t& i) {
             ++i;
         }
 
-        _tokens.push_back({TokenType::INT_LITERAL, value});
+        _tokens.push_back({TokenType::NUMBER, value});
 
         LOG("DIGIT: %s\n", value.c_str());
     }

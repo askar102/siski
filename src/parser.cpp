@@ -15,5 +15,27 @@ bool Parser::Check(TokenType type)
     return true ? Peek().type == type : false;
 } 
 
-bool Parser::Match(TokenType type) {
+bool Parser::Match(TokenType type) 
+{
+    if (Peek().type == type) 
+    {
+        ++_curr_token_pos;
+        return true;
+    }
+    else 
+    {
+        return false;
+    }
+}
+
+Token Parser::Except(TokenType type) 
+{
+    if (Peek().type == type) 
+    {
+        return _tokens[_curr_token_pos++];
+    }
+    else
+    {
+        LOG("ERROR: excepted cheto tam %s", Peek().text);
+    }
 }

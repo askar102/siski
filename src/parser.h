@@ -62,6 +62,7 @@ protected:
     std::unique_ptr<FuncDeclNode> ParseFunctionDeclaration();
 
     std::unique_ptr<BlockNode> ParseBlock();
+    std::unique_ptr<ArgNode> ParseArg();
     
 public:
     Parser(const std::vector<Token>& tokens)

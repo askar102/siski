@@ -39,10 +39,10 @@ private:
     std::unique_ptr<TypeNode> _type;
 
     /* Default value */
-    std::unique_ptr<Node> _defaultValue;
+    std::unique_ptr<ExpressionNode> _defaultValue;
 
 public:
-    ArgNode(std::string name, std::unique_ptr<TypeNode> type, std::unique_ptr<Node> defVal)
+    ArgNode(std::string name, std::unique_ptr<TypeNode> type, std::unique_ptr<ExpressionNode> defVal)
         : _name(name), _type(std::move(type)), _defaultValue(std::move(defVal)) {}
 };
 
@@ -153,7 +153,7 @@ private:
     std::vector<std::unique_ptr<ExpressionNode>> _call_args;
 
 public:
-    FunctionCallNode(std::string func_name, std::unique_ptr<ExpressionNode> call_args)
+    FunctionCallNode(std::string func_name, std::vector<std::unique_ptr<ExpressionNode>> call_args)
         : _func_name(func_name), _call_args(std::move(call_args)) {}
 };
 

@@ -85,8 +85,7 @@ std::unique_ptr<StatementNode> Parser::ParseStatement()
             if (type == TokenType::LPAREN) {
                 return ParseFunctionDeclaration();
             }
-
-            else if (type == TokenType::ASSIGN) {
+            else {
                 return ParseVariableDeclaration();
             }
         }
@@ -158,7 +157,7 @@ std::unique_ptr<VariableAssignNode> Parser::ParseVariableAssign()
         throw std::runtime_error("Variable assign error");
     }
 
-    Expect(SEMICOLON);
+    Expect(TokenType::SEMICOLON);
     return std::make_unique<VariableAssignNode>(var_name, std::move(expr));
 }
 
@@ -186,21 +185,21 @@ std::unique_ptr<FunctionCallNode> Parser::ParseFunctionCallStmt()
 
 std::unique_ptr<IfStatementNode> Parser::ParseIfStmt()
 {
-    Advance(); // Skip 'if'
+    Advance(); // skip 'if'
 
     Expect(TokenType::LPAREN);
-    std::unique_ptr<ExpressionNode> expr = ParseExpression();
+    std::unique_ptr<ExpressionNode> cond = ParseExpression();
     Expect(TokenType::RPAREN);
 
-    std::unique_ptr<BlockNode> block;
+    std::unique_ptr<StatementNode> then_block = ParseStatement();
 
-    if (Check(TokenType::LBRACE)) {
-        block = ParseBlock();
+    std::unique_ptr<StatementNode> else_block = nullptr;
+    if (Match(TokenType::ELSE))
+    {
+        else_block = ParseStatement();
     }
 
-     
-
-    
+    return std::make_unique<IfStatementNode>(std::move(cond), std::move(then_block), std::move(else_block));
 }
 
 std::unique_ptr<VariableDeclNode> Parser::ParseVariableDeclaration()
@@ -216,13 +215,45 @@ std::unique_ptr<VariableDeclNode> Parser::ParseVariableDeclaration()
     }
     
     Expect(TokenType::SEMICOLON);
-    return std::make_unique<VariableDeclNode>(std::move(var_type), var_name, expr);
+    return std::make_unique<VariableDeclNode>(std::move(var_type), var_name, std::move(expr));
 
 }
 
 std::unique_ptr<FuncDeclNode> Parser::ParseFunctionDeclaration()
 {
-    
+    // <type> <name>(...) {...}
+
+    std::string func_type_name = Advance().text;
+    std::unique_ptr<TypeNode> func_type = std::make_unique<TypeNode>(func_type_name, false); 
+
+    std::string func_name = Advance().text;
+    std::vector<std::unique_ptr<ArgNode>> func_args;
+
+    Expect(TokenType::LPAREN);
+
+    if (!Check(TokenType::RPAREN))
+    {
+        func_args.push_back(ParseArg());
+        while (Match(TokenType::COMMA))
+        {
+            func_args.push_back(ParseArg());
+        }  
+    }
+
+    Advance(); // skip )
+
+    std::unique_ptr<BlockNode> func_block = nullptr;
+
+    if (Check(TokenType::LBRACE)) 
+    {
+        func_block = ParseBlock();
+    }
+    else 
+    {
+        Expect(TokenType::SEMICOLON);
+    }
+
+    return std::make_unique<FuncDeclNode>(func_name, std::move(func_args), std::move(func_type), std::move(func_block));
 }
 
 std::unique_ptr<BlockNode> Parser::ParseBlock()
@@ -237,4 +268,19 @@ std::unique_ptr<BlockNode> Parser::ParseBlock()
     }
 
     return std::make_unique<BlockNode>(std::move(stmts));
+}
+
+std::unique_ptr<ArgNode> Parser::ParseArg()
+{
+    std::string var_type_name = Advance().text;
+    std::unique_ptr<TypeNode> var_type = std::make_unique<TypeNode>(var_type_name, false); // Idk about pointer now
+    std::string var_name = Advance().text;
+    std::unique_ptr<ExpressionNode> expr = nullptr;
+    if (Check(TokenType::ASSIGN))
+    {
+        Advance(); // skip =
+        expr = ParseExpression();
+    }
+    
+    return std::make_unique<ArgNode>(var_name, std::move(var_type), std::move(expr));
 }

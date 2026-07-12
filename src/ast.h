@@ -140,11 +140,11 @@ public:
 class FunctionCallNode : public StatementNode {
 private:
     std::string _func_name;
-    std::unique_ptr<ExpressionNode> _call_args;
+    std::vector<std::unique_ptr<ExpressionNode>> _call_args;
 
 public:
     FunctionCallNode(std::string func_name, std::unique_ptr<ExpressionNode> call_args)
-        : _func_name(func_name), _call_args(std::move(_call_args)) {}
+        : _func_name(func_name), _call_args(std::move(call_args)) {}
 };
 
 class NumberNode : public ExpressionNode {

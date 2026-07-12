@@ -41,15 +41,22 @@ protected:
 
     /* Если текущий токен нужного типа, то сьедаем. Иначе возвращаем ошибку. */
     /* Возвращает токен - тот, который проверил и пропустил вперед */
-    Token Except(TokenType type);   
+    Token Expect(TokenType type);   
 
     std::unique_ptr<ExpressionNode> ParseExpression();
+    std::unique_ptr<StatementNode> ParseStatement();
 
     std::unique_ptr<ReturnStatement> ParseReturnStmt();
 
+    std::unique_ptr<GotoStatement> ParseGotoStmt();
+    std::unique_ptr<LabelStatement> ParseLabelStmt();
+
+    std::unique_ptr<VariableAssignNode> ParseVariableAssign();
+    std::unique_ptr<FunctionCallNode> ParseFunctionCallStmt();
+    
 public:
     Parser(const std::vector<Token>& tokens)
-        : _tokens(tokens) {}
+        : _tokens(tokens), pratt(tokens) {}
 
     void ParseProgram();
 };

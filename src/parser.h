@@ -24,7 +24,7 @@ class Parser {
 protected:
     const std::vector<Token>& _tokens;
     size_t _curr_token_pos = 0;
-    PrattParser pratt;
+    std::unique_ptr<PrattParser> pratt;
 
     /* Посмотреть текущий токен */
     Token Peek() const;

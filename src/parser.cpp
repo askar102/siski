@@ -58,7 +58,7 @@ Token Parser::Expect(TokenType type)
 
 std::unique_ptr<ExpressionNode> Parser::ParseExpression()
 {
-    return pratt.ParseExpression(_curr_token_pos);
+    return pratt->ParseExpression(_curr_token_pos);
 }
 
 std::unique_ptr<StatementNode> Parser::ParseStatement()

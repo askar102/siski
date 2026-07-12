@@ -16,11 +16,12 @@ enum TokenType {
     IDENTIFIER, NUMBER, ARROW_OP, 
     EXTERN_C,
 
-    // expression operators
-    ASSIGN, PLUS, MINUS, STAR, SLASH, AMPERSAND,
+    // expression (binary) operators
+    ASSIGN, PLUS, MINUS, STAR, SLASH,
     // condition operators
     EQUAL, LESS, GREATER, LESS_EQUAL, GREATER_EQUAL,
 
+    AMPERSAND,
 
     LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, SEMICOLON, COMMA, COLON,
 

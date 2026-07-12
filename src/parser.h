@@ -20,7 +20,7 @@
 
 
 class Parser {
-private:
+protected:
     const std::vector<Token>& _tokens;
     size_t _curr_token_pos = 0;
 

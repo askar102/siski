@@ -167,6 +167,24 @@ public:
         : _left(std::move(left)), _op(op), _right(std::move(right)) {}
 };
 
+class VariableRefNode : public ExpressionNode {
+private:
+    std::string _var_name;
+public:
+    VariableRefNode(std::string var_name)
+        : _var_name(var_name) {}
+};
+
+/* -1 */
+class UnaryNode : public ExpressionNode {
+private:
+    std::string _op;
+    std::unique_ptr<NumberNode> _val;
+
+public:
+    UnaryNode(std::string op, std::unique_ptr<NumberNode> val)
+        : _op(op), _val(std::move(val)) {}
+};
 
 class ReturnStatement : public StatementNode {
 private:

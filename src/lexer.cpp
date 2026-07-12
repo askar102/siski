@@ -81,7 +81,7 @@ void Lexer::CheckAloneOperators(const std::string& content, size_t& i) {
 
         case '-': {
             if (i < content.size() && content[i+1] == '>') {
-                _tokens.push_back({TokenType::FUNC_RETURN_TYPE_OP, "->"});
+                _tokens.push_back({TokenType::ARROW_OP, "->"});
                 LOG("FUNC_RETURN_TYPE_OP: ->\n");
                 ++i;
                 break;
@@ -180,8 +180,8 @@ void Lexer::CheckAloneOperators(const std::string& content, size_t& i) {
         case '<': {
             // todo =<
             if (i < content.size() && content[i+1] == '=') {
-                _tokens.push_back({TokenType::EQUAL_AND_LESS, "<="});
-                LOG("QUAL_AND_LESS: <=\n");
+                _tokens.push_back({TokenType::LESS_EQUAL, "<="});
+                LOG("LESS_EQUAL: <=\n");
                 ++i;
                 break;
             }
@@ -193,8 +193,8 @@ void Lexer::CheckAloneOperators(const std::string& content, size_t& i) {
 
         case '>': {
             if (i < content.size() && content[i+1] == '=') {
-                _tokens.push_back({TokenType::EQUAL_AND_GREATER, ">="});
-                LOG("QUAL_AND_GREATER: >=\n");
+                _tokens.push_back({TokenType::GREATER_EQUAL, ">="});
+                LOG("GREATER_EQUAL: >=\n");
                 ++i;
                 break;
             }
@@ -231,12 +231,6 @@ void Lexer::CheckKeywords(const std::string& keyword) {
         else if (keyword == "label") {
             _tokens.push_back({TokenType::LABEL, "label"});
             LOG("LABEL: label\n");
-            return;
-        }
-
-        else if (keyword == "func") {
-            _tokens.push_back({TokenType::FUNC, "func"});
-            LOG("FUNC: func\n");
             return;
         }
 

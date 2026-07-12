@@ -4,8 +4,6 @@
 #include <memory>
 #include <string>
 
-#include "types.h"
-
 class Node {
 protected:
     Node* _parent = nullptr;
@@ -101,7 +99,7 @@ private:
     std::string _var_name;
     std::unique_ptr<ExpressionNode> _value;
 public:
-    VariableAssignNode(std::string var_name, std::unqiue_ptr<ExpressionNode> value)
+    VariableAssignNode(std::string var_name, std::unique_ptr<ExpressionNode> value)
         : _var_name(var_name), _value(std::move(value)) {}
 };
 
@@ -121,7 +119,23 @@ public:
 // class ConditionalExpression : public Node {};
 
 /* goto label; label: */
-class GotoStatement : public StatementNode {};
+class GotoStatement : public StatementNode {
+private:
+    std::string _label_name;
+public:
+    GotoStatement(std::string label_name)
+        : _label_name(label_name) {}
+};
+
+class LabelStatement : public StatementNode {
+private:
+    std::string _label_name;
+public:
+    LabelStatement(std::string label_name)
+        : _label_name(label_name) {}
+};
+
+
 
 class FunctionCallNode : public StatementNode {
 private:
@@ -146,7 +160,7 @@ class BinaryExpression : public ExpressionNode {
 private:
     std::unique_ptr<ExpressionNode> _left;
     std::string _op;
-    std::unique_ptr<ExpressionNode>> _right;
+    std::unique_ptr<ExpressionNode> _right;
 
 public:
     BinaryExpression(std::unique_ptr<ExpressionNode> left, std::string op, std::unique_ptr<ExpressionNode> right)

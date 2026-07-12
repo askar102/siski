@@ -10,7 +10,7 @@ enum TokenType {
     // keywords
     IF, ELSE, 
     GOTO, LABEL,
-    FUNC, RETURN,
+    RETURN,
 
     // another
     IDENTIFIER, INT_LITERAL, ARROW_OP, 
@@ -19,7 +19,7 @@ enum TokenType {
     // expression operators
     ASSIGN, PLUS, MINUS, STAR, SLASH, AMPERSAND,
     // condition operators
-    EQUAL, LESS, GREATER, EQUAL_AND_LESS, EQUAL_AND_GREATER,
+    EQUAL, LESS, GREATER, LESS_EQUAL, GREATER_EQUAL,
 
 
     LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, SEMICOLON, COMMA, COLON,

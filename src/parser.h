@@ -1,5 +1,12 @@
 #pragma once
 
+#include <string>
+#include <vector>
+#include <memory>
+#include <cstdint>
+
+#include "lexer.h"
+
 #include "log.h"
 
 // И так, у нас есть парсер.
@@ -10,11 +17,24 @@
 // 4. Старт программы у нас будет с Root ноды
 
 
-class Praser {
-public:
-
-
+class Parser {
 private:
+    std::vector<std::pair<TokenType, std::string>> _tokens;
+    size_t _curr_token_pos;
 
+    void SetTokens(std::vector<std::pair<TokenType, std::string>> tokens);
+
+    /* Посмотреть текущий токен */
+    TokenType Peek() const;
+
+    /* Взять текущий токен и сдвинуть позицию на один вперед. Возвращает токен который он только что "сьел" */
+    TokenType Advance();
+
+    /* Проверить того ли типа текущий токен. Ничего не трогает */
+    bool Check(TokenType type);
+
+
+    void Match();
+    void Except();   
 
 };

@@ -27,6 +27,11 @@ enum TokenType {
     C_EOF, C_ERROR,
 };
 
+struct Token {
+    TokenType type;
+    std::string text;
+};
+
 
 class Lexer {
 public:

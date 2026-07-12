@@ -101,6 +101,10 @@ std::unique_ptr<StatementNode> Parser::ParseStatement()
         }
     }
 
+    if (Check(TokenType::LBRACE)) {
+        return ParseBlock();
+    }
+
     throw std::runtime_error("Unknown statement, token: " + Peek().text);
 }
 
@@ -193,4 +197,19 @@ std::unique_ptr<VariableDeclNode> Parser::ParseVariableDeclaration()
 std::unique_ptr<FuncDeclNode> Parser::ParseFunctionDeclaration()
 {
 
+}
+
+std::unique_ptr<BlockNode> Parser::ParseBlock()
+{
+    Advance(); // skip {
+
+    std::vector<std::unique_ptr<StatementNode>> stmts;
+    
+    while (!Match(TokenType::RBRACE))
+    {
+        stmts.push_back(ParseStatement());
+    }
+
+    Expect(TokenType::SEMICOLON);
+    return std::make_unique<BlockNode>(std::move(stmts));
 }

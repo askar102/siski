@@ -60,6 +60,8 @@ protected:
     std::unique_ptr<IfStatementNode> ParseIfStmt();
     std::unique_ptr<VariableDeclNode> ParseVariableDeclaration();
     std::unique_ptr<FuncDeclNode> ParseFunctionDeclaration();
+
+    std::unique_ptr<BlockNode> ParseBlock();
     
 public:
     Parser(const std::vector<Token>& tokens)

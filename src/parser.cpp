@@ -39,3 +39,5 @@ Token Parser::Except(TokenType type)
         LOG("ERROR: excepted cheto tam %s", Peek().text);
     }
 }
+
+ExpressionNode Parser::ParseExpression() {}

@@ -5,6 +5,8 @@
 #include <memory>
 #include <cstdint>
 
+#include "ast.h"
+
 #include "lexer.h"
 
 #include "log.h"
@@ -39,5 +41,7 @@ private:
     /* Если текущий токен нужного типа, то сьедаем. Иначе возвращаем ошибку. */
     /* Возвращает токен - тот, который проверил и пропустил вперед */
     Token Except(TokenType type);   
+
+    ExpressionNode ParseExpression();
 
 };

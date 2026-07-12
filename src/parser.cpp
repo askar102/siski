@@ -63,6 +63,8 @@ std::unique_ptr<ExpressionNode> Parser::ParseExpression()
 
 std::unique_ptr<StatementNode> Parser::ParseStatement()
 {
+    LOG("ParseStatement at pos=%zu token=%s\n", _curr_token_pos, Peek().text.c_str());
+
     if (Check(TokenType::IF)) {
         return ParseIfStmt();
     }

@@ -18,6 +18,7 @@ void Lexer::Tokenize(const std::string& content) {
 
         else if (std::isdigit(content[i])) {
             CheckDigit(content, i);
+            --i;
             continue;
         }
 
@@ -25,6 +26,7 @@ void Lexer::Tokenize(const std::string& content) {
         // check exp. operators ->  keywords 
         else if (std::isalpha(content[i])) {
             CheckAlpha(content, i);
+            --i;
             continue;
         }
         

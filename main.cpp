@@ -20,6 +20,11 @@ int main() {
     // size_t curr = 0;
     // par.ParseExpression(curr);
 
-    Parser par(lex.GetTokens());
-    par.ParseProgram();
+    try {
+        Parser par(lex.GetTokens());
+        auto ast = par.ParseProgram();
+        ast->print();
+    } catch (const std::exception& e) {
+        printf("PARSE ERROR: %s\n", e.what());
+    }
 }

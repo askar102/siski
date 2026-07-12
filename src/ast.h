@@ -7,11 +7,13 @@
 class Node {
 protected:
     Node* _parent = nullptr;
+    void pad(int indent) const { for (int i = 0; i < indent; ++i) printf("  "); }
 public:
     virtual ~Node() = default;
 
     void set_parent(Node* parent) { _parent = parent; }
     Node* get_parent() const { return _parent; }
+    virtual void print(int indent = 0) const { pad(indent); printf("<node>\n"); }
 };
 
 /* То, что выполняется пошагово */
@@ -30,6 +32,10 @@ private:
     bool _is_pointer = false;
 public:
     TypeNode(std::string type, bool is_pointer) : _type(type), _is_pointer(is_pointer) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Type: %s%s\n", _type.c_str(), _is_pointer ? "*" : "");
+    }
 };
 
 /* Argument node */
@@ -44,6 +50,10 @@ private:
 public:
     ArgNode(std::string name, std::unique_ptr<TypeNode> type, std::unique_ptr<ExpressionNode> defVal)
         : _name(name), _type(std::move(type)), _defaultValue(std::move(defVal)) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Arg: %s\n", _name.c_str());
+    }
 };
 
 /* Block node */
@@ -53,6 +63,11 @@ private:
 public:
     BlockNode(std::vector<std::unique_ptr<StatementNode>> stmts) 
         : _stmts(std::move(stmts)) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Block:\n");
+        for (auto& s : _stmts) s->print(indent + 1);
+    }
 };
 
 /* Function node */
@@ -91,6 +106,12 @@ public:
                 _block->set_parent(this);
             }
         }
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Func: %s\n", _name.c_str());
+        for (auto& a : _args) a->print(indent + 1);
+        if (_block) _block->print(indent + 1);
+    }
 };
 
 class VariableDeclNode : public StatementNode {
@@ -101,6 +122,11 @@ private:
 public:
     VariableDeclNode(std::unique_ptr<TypeNode> type, std::string var_name, std::unique_ptr<ExpressionNode> init = nullptr)
         : _type(std::move(type)), _var_name(var_name), _init(std::move(init)) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("VarDecl: %s\n", _var_name.c_str());
+        if (_init) _init->print(indent + 1);
+    }
 };
 
 /* x = 1 */
@@ -111,6 +137,11 @@ private:
 public:
     VariableAssignNode(std::string var_name, std::unique_ptr<ExpressionNode> value)
         : _var_name(var_name), _value(std::move(value)) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Assign: %s\n", _var_name.c_str());
+        if (_value) _value->print(indent + 1);
+    }
 };
 
 /* If (1 > 0) { ... }*/
@@ -123,6 +154,16 @@ private:
 public:
     IfStatementNode(std::unique_ptr<ExpressionNode> condition, std::unique_ptr<StatementNode> then_block, std::unique_ptr<StatementNode> else_block)
         : _condition(std::move(condition)), _then_block(std::move(then_block)), _else_block(std::move(else_block)) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("If:\n");
+        pad(indent + 1); printf("cond:\n");  _condition->print(indent + 2);
+        pad(indent + 1); printf("then:\n");  _then_block->print(indent + 2);
+        if (_else_block) {
+            pad(indent + 1); printf("else:\n");
+            _else_block->print(indent + 2);
+        }
+    }
 };
 
 // /* 1 == 1 */
@@ -135,6 +176,10 @@ private:
 public:
     GotoStatement(std::string label_name)
         : _label_name(label_name) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Goto: %s\n", _label_name.c_str());   // и "Label:" во втором
+    }
 };
 
 class LabelStatement : public StatementNode {
@@ -155,6 +200,11 @@ private:
 public:
     FunctionCallNode(std::string func_name, std::vector<std::unique_ptr<ExpressionNode>> call_args)
         : _func_name(func_name), _call_args(std::move(call_args)) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Call: %s\n", _func_name.c_str());
+        for (auto& a : _call_args) a->print(indent + 1);
+    }
 };
 
 class NumberNode : public ExpressionNode {
@@ -163,6 +213,10 @@ private:
 public:
     NumberNode(int val)
         : _val(val) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Number: %d\n", _val);
+    }   
 };
 
 /* 1 + 1 */
@@ -175,6 +229,12 @@ private:
 public:
     BinaryExpression(std::unique_ptr<ExpressionNode> left, std::string op, std::unique_ptr<ExpressionNode> right)
         : _left(std::move(left)), _op(op), _right(std::move(right)) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Binary: %s\n", _op.c_str());
+        _left->print(indent + 1);
+        _right->print(indent + 1);
+    }
 };
 
 class VariableRefNode : public ExpressionNode {
@@ -183,6 +243,10 @@ private:
 public:
     VariableRefNode(std::string var_name)
         : _var_name(var_name) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("VarRef: %s\n", _var_name.c_str());
+    }
 };
 
 /* -1 */
@@ -202,6 +266,11 @@ private:
 public:
     ReturnStatement(std::unique_ptr<ExpressionNode> return_val)
         : _return_val(std::move(return_val)) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Return:\n");
+        if (_return_val) _return_val->print(indent + 1);
+    }
 };
 
 /* maybe */
@@ -231,5 +300,10 @@ public:
             }
             
         }
+    }
+
+    void print(int indent = 0) const override {
+        pad(indent); printf("Root:\n");
+        for (auto& f : _funcs) f->print(indent + 1);
     }
 };

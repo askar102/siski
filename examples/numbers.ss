@@ -1,1 +1,3 @@
-1 + 1 < LLDSD
+int main() {
+    return 0;
+}

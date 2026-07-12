@@ -19,7 +19,7 @@ enum TokenType {
     // expression (binary) operators
     ASSIGN, PLUS, MINUS, STAR, SLASH,
     // condition operators
-    EQUAL, LESS, GREATER, LESS_EQUAL, GREATER_EQUAL,
+    EQUAL, LESS, GREATER, LESS_EQUAL, GREATER_EQUAL, NOT_EQUAL,
 
     AMPERSAND,
 

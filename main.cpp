@@ -1,11 +1,12 @@
 #include "src/lexer.h"
 #include "src/parser.h"
 #include "src/log.h"
+#include "src/pratt.h"
 
 
 int main() {
-    std::ifstream file("examples/main.ss");
-    if (!file.is_open()) return 1;
+    std::ifstream file("examples/numbers.ss");
+    if (!file.is_open()) throw std::runtime_error("Couldn't open file");
 
     std::string fileContent((std::istreambuf_iterator<char>(file)),
                              std::istreambuf_iterator<char>());
@@ -15,6 +16,10 @@ int main() {
     Lexer lex;
     lex.Tokenize(fileContent);
 
-    Parser par(lex.GetTokens());
-    par.ParseProgram();
+    PrattParser par(lex.GetTokens());
+    size_t curr = 0;
+    par.ParseExpression(curr);
+
+    // Parser par(lex.GetTokens());
+    // par.ParseProgram();
 }

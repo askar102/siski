@@ -8,4 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(compiler 
     main.cpp 
     src/lexer.cpp
+    src/parser.cpp
+    src/pratt.cpp
 )

@@ -179,10 +179,10 @@ public:
 class UnaryNode : public ExpressionNode {
 private:
     std::string _op;
-    std::unique_ptr<NumberNode> _val;
+    std::unique_ptr<ExpressionNode> _val;
 
 public:
-    UnaryNode(std::string op, std::unique_ptr<NumberNode> val)
+    UnaryNode(std::string op, std::unique_ptr<ExpressionNode> val)
         : _op(op), _val(std::move(val)) {}
 };
 

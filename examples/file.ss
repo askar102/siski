@@ -27,6 +27,17 @@ public func loopExample(input: *int, count: int) -> int {
     return new_input;
 }
 
+public func loopExample(input: *int, count: int) -> int {
+    # input it is a pointer here!
+    extern C {
+        int structure(int huy, int pizda, int lol) {
+            
+        }
+    };
+
+    return new_input;
+}
+
 
 func main() -> int {
     my_input = 1;

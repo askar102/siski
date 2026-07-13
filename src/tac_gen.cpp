@@ -3,7 +3,6 @@
 #include "tac.h"
 #include <stdexcept>
 #include <format>
-#include <print>
 
 void TacGenVisitor::dump_tac(const TacProgram& prog)
 {
@@ -71,13 +70,18 @@ void TacGenVisitor::dump_tac(const TacProgram& prog)
                 }
 
                 case INSTR_TAG::CALL: {
-                    printf("CALL %s, [",
-                        i.name.c_str()
+                    printf("%s = CALL %s, [",
+                        i.result.name.c_str(), i.name.c_str()
                     );
                     for (auto& val : i.args) {
                         printf(" %s ", val.name.c_str());
                     }
                     printf("]\n");
+                    break;
+                }
+
+                case INSTR_TAG::UNARY: {
+                    printf("%s = %s%s\n", i.result.name.c_str(), i.op.c_str(), val_to_str(i.lhs).c_str());
                     break;
                 }
 

@@ -43,6 +43,9 @@ public:
     }
 
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::string get_type() { return _type; }
+    bool is_pointer() { return _is_pointer; }
 };
 
 /* Argument node */
@@ -73,6 +76,10 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::string get_name() { return _name; }
+    TypeNode* get_type() { return _type.get(); }
+    ExpressionNode* get_def_val() { return _defaultValue.get(); }
 };
 
 /* Block node */
@@ -90,6 +97,15 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::vector<StatementNode*> get_stmts() {
+        std::vector<StatementNode*> res;
+        for (auto& ptr : _stmts) {
+            res.push_back(ptr.get());
+        }
+
+        return res;
+    }
 };
 
 /* Function node */
@@ -137,6 +153,20 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::string get_name() { return _name; }
+
+    std::vector<ArgNode*> get_args() {
+        std::vector<ArgNode*> res;
+        for (auto& ptr : _args) {
+            res.push_back(ptr.get());
+        }
+
+        return res;
+    }
+
+    TypeNode* get_ret_type() { return _return_type.get(); } 
+    BlockNode* get_block() { return _block.get(); }
 };
 
 class VariableDeclNode : public StatementNode {
@@ -155,6 +185,10 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    TypeNode* get_type() { return _type.get(); }
+    std::string get_name() { return _var_name; }
+    ExpressionNode* get_init() { return _init.get(); }
 };
 
 /* x = 1 */
@@ -173,6 +207,9 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::string get_var_name() { return _var_name; }
+    ExpressionNode* get_value() { return _value.get(); }
 };
 
 /* If (1 > 0) { ... }*/
@@ -198,6 +235,10 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    ExpressionNode* get_condition() { return _condition.get(); }
+    StatementNode* get_then_block() { return _then_block.get(); }
+    StatementNode* get_else_block() { return _else_block.get(); }
 };
 
 // /* 1 == 1 */
@@ -218,6 +259,9 @@ public:
     
     // visitor 
     void accept(Visitor& v) override { v.visit(*this); }
+
+
+    std::string get_name() { return _label_name; }
 };
 
 class LabelStatement : public StatementNode {
@@ -234,6 +278,8 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::string get_name() { return _label_name; }
 };
 
 class FunctionCallNode : public StatementNode {
@@ -252,6 +298,17 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::string get_name() { return _func_name; }
+
+    std::vector<ExpressionNode*> get_call_args() {
+        std::vector<ExpressionNode*> res;
+        for (auto& ptr : _call_args) {
+            res.push_back(ptr.get());
+        }
+
+        return res;
+    }
 };
 
 class NumberNode : public ExpressionNode {
@@ -267,6 +324,8 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    int get_val() { return _val; }
 };
 
 /* 1 + 1 */
@@ -288,6 +347,10 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    ExpressionNode* get_left() { return _left.get(); }
+    std::string get_op() { return _op; }
+    ExpressionNode* get_right() { return _right.get(); }
 };
 
 class VariableRefNode : public ExpressionNode {
@@ -303,6 +366,8 @@ public:
 
     // visitor 
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::string get_name() { return _var_name; }
 };
 
 /* -1 */
@@ -325,6 +390,9 @@ public:
     
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::string get_op() { return _op; }
+    ExpressionNode* get_val() { return _val.get(); }
 };
 
 class ReturnStatement : public StatementNode {
@@ -341,6 +409,8 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    ExpressionNode* get_return_val() { return _return_val.get(); }
 };
 
 /* maybe */
@@ -353,6 +423,8 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::string get_row_code() { return _row_code; }
 };
  
 /* Main/Root node */
@@ -382,4 +454,13 @@ public:
 
     // visitor
     void accept(Visitor& v) override { v.visit(*this); }
+
+    std::vector<FuncDeclNode*> get_funcs() {
+        std::vector<FuncDeclNode*> res;
+        for (auto& ptr : _funcs) {
+            res.push_back(ptr.get());
+        }
+
+        return res;
+    }
 };

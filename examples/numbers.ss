@@ -1,3 +1,4 @@
 int main() {
-    return 1+2*100/1000;
+    int x = 10;
+    return x+2*100/1000;
 }

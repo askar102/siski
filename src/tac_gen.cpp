@@ -25,7 +25,19 @@ void TacGenVisitor::dump_tac(const TacProgram& prog)
                 }
 
                 case INSTR_TAG::RET: {
-                    printf("RET %s", val_to_str(i.lhs).c_str());
+                    printf("RET %s\n", val_to_str(i.lhs).c_str());
+                    break;
+                }
+
+                case INSTR_TAG::LOAD: {
+                    printf("%s = LOAD %s\n", i.result.name.c_str(), i.name.c_str());
+                    break;
+                }
+
+                case INSTR_TAG::DECL_VAR: {
+                    printf("DECL_VAR %s (type: %s, value: %s)\n",
+                        i.name.c_str(), i.decl_type.c_str(), val_to_str(i.lhs).c_str()
+                    );
                     break;
                 }
 
@@ -178,14 +190,18 @@ void TacGenVisitor::visit(VariableAssignNode& n)
 
 void TacGenVisitor::visit(VariableDeclNode& n)
 {
-    // Value t = new_temp_val();
-    // Instr i;
-    // i.tag = INSTR_TAG::DECL_VAR;
-    // i.result = t;
+    Instr i;
+    i.tag = INSTR_TAG::DECL_VAR;
 
-    // i.lhs = Value::Var(n.get_name());
-    // i.rhs = Value::Const(n.get_init())
-    throw std::runtime_error("TAC: VarDeclNode is not impl yet.");
+    i.name = n.get_name();
+    i.decl_type = n.get_type()->get_type_name();
+    if (n.get_init()) 
+    {
+        i.lhs = gen_expr(n.get_init());
+    }
+    push_to_func_body(i);
+    
+    // throw std::runtime_error("TAC: VarDeclNode is not impl yet.");
 }
 
 void TacGenVisitor::visit(IfStatementNode&) 

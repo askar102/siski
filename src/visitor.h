@@ -16,6 +16,7 @@ class LabelStatement;
 class FuncDeclNode;
 class ArgNode;
 class TypeNode;
+class ExternStatement;
 class RootNode;
 
 class Visitor {
@@ -38,4 +39,5 @@ public:
     virtual void visit(ArgNode&) = 0;
     virtual void visit(TypeNode&) = 0;
     virtual void visit(RootNode&) = 0;
+    virtual void visit(ExternStatement&) = 0;
 };

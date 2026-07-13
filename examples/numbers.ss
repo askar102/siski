@@ -1,5 +1,10 @@
 int foo(int a = 10, int b) {
-    return a + b;
+    if (a > 10) {
+        return a + b;
+    }
+    else {
+        return 0;
+    }
 }
 
 int main() {

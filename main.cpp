@@ -1,6 +1,7 @@
 #include "src/lexer.h"
 #include "src/parser.h"
 #include "src/log.h"
+#include "src/printAst.h"
 
 
 int main() {
@@ -18,7 +19,10 @@ int main() {
     try {
         Parser par(lex.GetTokens());
         auto ast = par.ParseProgram();
-        ast->print();
+        
+        PrintAst printer;
+        ast->accept(printer);
+
     } catch (const std::exception& e) {
         printf("PARSE ERROR: %s\n", e.what());
     }

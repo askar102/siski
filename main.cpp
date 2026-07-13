@@ -4,6 +4,9 @@
 // #include "src/print_ast.h"
 #include "src/tac_gen.h"
 
+#include "src/air.h"
+#include "src/codegen/c_gen.h"
+
 
 int main() {
     std::ifstream file("examples/numbers.ss");
@@ -26,6 +29,12 @@ int main() {
         TacGenVisitor tac_gen;
         TacProgram tac = tac_gen.gen(*ast);
         TacGenVisitor::dump_tac(tac);
+
+        AirGenerator air_gen;
+        AirProgram air_out = air_gen.analyze(tac);
+
+        CGen gen;
+        gen.generate(air_out);
 
     } catch (const std::exception& e) {
         printf("PARSE ERROR: %s\n", e.what());

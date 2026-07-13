@@ -2,8 +2,11 @@
 
 #include "tac.h"
 
+using AirProgram = TacProgram;
+
+
 class AirGenerator {
 public:
-    TacProgram analyze(TacProgram prog);
+    AirProgram analyze(TacProgram prog);
 
 };

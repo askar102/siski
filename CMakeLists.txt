@@ -11,4 +11,7 @@ add_executable(compiler
     src/parser.cpp
     src/print_ast.cpp
     src/tac_gen.cpp
+    src/air.cpp
+    
+    src/codegen/c_gen.cpp
 )

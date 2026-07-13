@@ -1,4 +1,4 @@
-int foo(int huy = 20) {
+int foo(int huy) {
     return 1;
 }
 

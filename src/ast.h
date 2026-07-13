@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "log.h"
+#include "visitor.h"
 
 class Node {
 protected:
@@ -16,6 +16,9 @@ public:
     void set_parent(Node* parent) { _parent = parent; }
     Node* get_parent() const { return _parent; }
     virtual void print(int indent = 0) const { pad(indent); printf("<node>\n"); }
+
+    // visitor
+    virtual void accept(Visitor& v) = 0;
 };
 
 /* То, что выполняется пошагово */
@@ -38,6 +41,8 @@ public:
     void print(int indent = 0) const override {
         pad(indent); printf("Type: %s%s\n", _type.c_str(), _is_pointer ? "*" : "");
     }
+
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 /* Argument node */
@@ -64,7 +69,10 @@ public:
             pad(indent + 1); printf("default:\n");
             _defaultValue->print(indent + 2);
         }
-}
+    }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 /* Block node */
@@ -79,6 +87,9 @@ public:
         pad(indent); printf("Block:\n");
         for (auto& s : _stmts) s->print(indent + 1);
     }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 /* Function node */
@@ -123,6 +134,9 @@ public:
         for (auto& a : _args) a->print(indent + 1);
         if (_block) _block->print(indent + 1);
     }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 class VariableDeclNode : public StatementNode {
@@ -138,6 +152,9 @@ public:
         pad(indent); printf("VarDecl: %s\n", _var_name.c_str());
         if (_init) _init->print(indent + 1);
     }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 /* x = 1 */
@@ -153,6 +170,9 @@ public:
         pad(indent); printf("Assign: %s\n", _var_name.c_str());
         if (_value) _value->print(indent + 1);
     }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 /* If (1 > 0) { ... }*/
@@ -175,6 +195,9 @@ public:
             _else_block->print(indent + 2);
         }
     }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 // /* 1 == 1 */
@@ -192,6 +215,9 @@ public:
         pad(indent); 
         printf("Goto: %s\n", _label_name.c_str()); 
     }
+    
+    // visitor 
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 class LabelStatement : public StatementNode {
@@ -205,6 +231,9 @@ public:
         pad(indent);
         printf("Label: %s\n", _label_name.c_str());
     }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 class FunctionCallNode : public StatementNode {
@@ -220,6 +249,9 @@ public:
         pad(indent); printf("Call: %s\n", _func_name.c_str());
         for (auto& a : _call_args) a->print(indent + 1);
     }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 class NumberNode : public ExpressionNode {
@@ -232,6 +264,9 @@ public:
     void print(int indent = 0) const override {
         pad(indent); printf("Number: %d\n", _val);
     }   
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 /* 1 + 1 */
@@ -250,6 +285,9 @@ public:
         _left->print(indent + 1);
         _right->print(indent + 1);
     }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 class VariableRefNode : public ExpressionNode {
@@ -262,6 +300,9 @@ public:
     void print(int indent = 0) const override {
         pad(indent); printf("VarRef: %s\n", _var_name.c_str());
     }
+
+    // visitor 
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 /* -1 */
@@ -281,6 +322,9 @@ public:
         printf("Op: %s\n", _op.c_str());
         _val->print(indent + 1);
     }
+    
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 class ReturnStatement : public StatementNode {
@@ -294,6 +338,9 @@ public:
         pad(indent); printf("Return:\n");
         if (_return_val) _return_val->print(indent + 1);
     }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
 
 /* maybe */
@@ -303,6 +350,9 @@ private:
 public:
     ExternStatement(std::string row_code)
         : _row_code(row_code) {}
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };
  
 /* Main/Root node */
@@ -329,4 +379,7 @@ public:
         pad(indent); printf("Root:\n");
         for (auto& f : _funcs) f->print(indent + 1);
     }
+
+    // visitor
+    void accept(Visitor& v) override { v.visit(*this); }
 };

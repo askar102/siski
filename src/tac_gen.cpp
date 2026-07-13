@@ -3,12 +3,13 @@
 #include "tac.h"
 #include <stdexcept>
 #include <format>
+#include <print>
 
 void TacGenVisitor::dump_tac(const TacProgram& prog)
 {
     for (auto& fn : prog.funcs)
     {
-        printf("FUNC %s:\n", fn.name.c_str());
+        printf("FUNC %s(type: %s):\n", fn.name.c_str(), fn.retType.c_str());
         for (auto& i : fn.body)
         {
             switch (i.tag) {
@@ -66,6 +67,17 @@ void TacGenVisitor::dump_tac(const TacProgram& prog)
                     printf("JUMP %s\n",
                         i.name.c_str()
                     );
+                    break;
+                }
+
+                case INSTR_TAG::CALL: {
+                    printf("CALL %s, [",
+                        i.name.c_str()
+                    );
+                    for (auto& val : i.args) {
+                        printf(" %s ", val.name.c_str());
+                    }
+                    printf("]\n");
                     break;
                 }
 
@@ -306,8 +318,11 @@ void TacGenVisitor::visit(LabelStatement& n)
     // throw std::runtime_error("TAC: Label is not impl yet.");
 }
 
-void TacGenVisitor::visit(ArgNode&)
+void TacGenVisitor::visit(ArgNode& n)
 {
+    // Instr i;
+
+
     throw std::runtime_error("TAC: Arg is not impl yet.");
 }
 void TacGenVisitor::visit(TypeNode&)

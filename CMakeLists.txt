@@ -10,4 +10,5 @@ add_executable(compiler
     src/lexer.cpp
     src/parser.cpp
     src/print_ast.cpp
+    src/tac_gen.cpp
 )

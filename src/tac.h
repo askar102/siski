@@ -8,7 +8,7 @@ enum class INSTR_TAG {
     CONST, // t = <number>
     BINOP, // t = a <op> b
     UNARY, // t = <op> a
-    DECL, // DECL <var_name> оьявить перменную
+    DECL_VAR, // DECL <var_name> оьявить перменную
     STORE, // STORE <var_name>, value
     LOAD, // t = load <var_name>
     LABEL, // метка

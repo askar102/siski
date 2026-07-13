@@ -44,7 +44,7 @@ public:
 
     void accept(Visitor& v) override { v.visit(*this); }
 
-    std::string get_type() { return _type; }
+    std::string get_type_name() { return _type; }
     bool is_pointer() { return _is_pointer; }
 };
 

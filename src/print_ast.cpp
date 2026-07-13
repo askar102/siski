@@ -174,7 +174,7 @@ void PrintAst::visit(ArgNode& n)
 void PrintAst::visit(TypeNode& n) 
 {
     pad();
-    printf("Type: %s%s\n", n.get_type().c_str(), n.is_pointer() ? "*" : "");
+    printf("Type: %s%s\n", n.get_type_name().c_str(), n.is_pointer() ? "*" : "");
 };
 
 void PrintAst::visit(RootNode& n) 

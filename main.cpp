@@ -1,7 +1,8 @@
 #include "src/lexer.h"
 #include "src/parser.h"
 #include "src/log.h"
-#include "src/print_ast.h"
+// #include "src/print_ast.h"
+#include "src/tac_gen.h"
 
 
 int main() {
@@ -20,8 +21,11 @@ int main() {
         Parser par(lex.GetTokens());
         auto ast = par.ParseProgram();
         
-        PrintAst printer;
-        ast->accept(printer);
+        // PrintAst printer;
+        // ast->accept(printer);
+        TacGenVisitor tac_gen;
+        TacProgram tac = tac_gen.gen(*ast);
+        TacGenVisitor::dump_tac(tac);
 
     } catch (const std::exception& e) {
         printf("PARSE ERROR: %s\n", e.what());

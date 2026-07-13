@@ -31,4 +31,5 @@ public:
     void visit(TypeNode& n) override;
     void visit(RootNode& n) override;
     void visit(ExternStatement& st) override;
+    void visit(ExpressionStatement& exp) override;
 };

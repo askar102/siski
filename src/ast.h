@@ -30,6 +30,24 @@ class DeclarationNode : public Node {};
 /* типо ретурнит что то */
 class ExpressionNode : public Node {};
 
+class ExpressionStatement : public StatementNode {
+private:
+    std::unique_ptr<ExpressionNode> _expr;
+public:
+    ExpressionStatement(std::unique_ptr<ExpressionNode> expr)
+        : _expr(std::move(expr)) {}
+
+    void print(int indent = 0) const override 
+    {
+        pad(indent); printf("ExprStmt:\n");
+        if (_expr) _expr->print(indent + 1);
+    }
+
+    void accept(Visitor& v) override { v.visit(*this); }
+
+    ExpressionNode* get_expr() { return _expr.get(); }
+};
+
 /* Type node */
 class TypeNode : public Node {
 private:
@@ -282,7 +300,7 @@ public:
     std::string get_name() { return _label_name; }
 };
 
-class FunctionCallNode : public StatementNode {
+class FunctionCallNode : public ExpressionNode {
 private:
     std::string _func_name;
     std::vector<std::unique_ptr<ExpressionNode>> _call_args;

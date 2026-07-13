@@ -8,7 +8,7 @@ int main() {
     }
     else
     {
-        foo(30);
+        int lol = foo(30);
         int res = 1;
         return res;
     }

@@ -1,4 +1,6 @@
 #include "parser.h"
+#include "ast.h"
+#include <memory>
 
 Parser::Parser(const std::vector<Token>& tokens)
     : _tokens(tokens) {}
@@ -69,6 +71,7 @@ int32_t Parser::lbp(TokenType type) const
         case TokenType::MINUS: return 10;
         case TokenType::STAR:
         case TokenType::SLASH: return 20;
+        case TokenType::LPAREN: return 30;
         default: return 0;
     }
 }
@@ -127,6 +130,27 @@ std::unique_ptr<ExpressionNode> Parser::nud()
 std::unique_ptr<ExpressionNode> Parser::led(std::unique_ptr<ExpressionNode> left)
 {
     Token t = Peek();
+
+    if (Check(TokenType::LPAREN))
+    {
+        Advance();
+        std::vector<std::unique_ptr<ExpressionNode>> args;
+        if (!Check(TokenType::RPAREN)) {
+            args.push_back(parsePratt(0));
+            while (Match(TokenType::COMMA))
+                args.push_back(parsePratt(0));
+        }
+        Expect(TokenType::RPAREN);
+
+        auto* ref = dynamic_cast<VariableRefNode*>(left.get());
+        if (!ref)
+        {
+            throw std::runtime_error("LED: Call target is not a name.");
+        }
+        std::string fname = ref->get_name();
+        return std::make_unique<FunctionCallNode>(fname, std::move(args));
+    }
+
     int32_t bp = lbp(t.type);
     std::string op = opChar(t.type);
     Advance(); 
@@ -173,7 +197,9 @@ std::unique_ptr<StatementNode> Parser::ParseStatement()
 
         // <func_name>(...)
         if (CheckNext(TokenType::LPAREN)) {
-            return ParseFunctionCallStmt();
+            auto exp = ParseExpression();
+            Expect(SEMICOLON);
+            return std::make_unique<ExpressionStatement>(std::move(exp));
         }
 
         if (CheckNext(TokenType::ASSIGN)) {
@@ -245,27 +271,27 @@ std::unique_ptr<VariableAssignNode> Parser::ParseVariableAssign()
     return std::make_unique<VariableAssignNode>(var_name, std::move(expr));
 }
 
-std::unique_ptr<FunctionCallNode> Parser::ParseFunctionCallStmt()
-{
-    std::string func_name = Advance().text;
-    std::vector<std::unique_ptr<ExpressionNode>> call_args;
+// std::unique_ptr<FunctionCallNode> Parser::ParseFunctionCallStmt()
+// {
+//     std::string func_name = Advance().text;
+//     std::vector<std::unique_ptr<ExpressionNode>> call_args;
 
-    Expect(TokenType::LPAREN);
+//     Expect(TokenType::LPAREN);
 
-    if (!Check(TokenType::RPAREN))
-    {
-        call_args.push_back(ParseExpression());
-        while (Match(TokenType::COMMA))
-        {
-            call_args.push_back(ParseExpression());
-        }  
-    }
+//     if (!Check(TokenType::RPAREN))
+//     {
+//         call_args.push_back(ParseExpression());
+//         while (Match(TokenType::COMMA))
+//         {
+//             call_args.push_back(ParseExpression());
+//         }  
+//     }
 
-    Expect(TokenType::RPAREN);
-    Expect(TokenType::SEMICOLON);
+//     Expect(TokenType::RPAREN);
+//     Expect(TokenType::SEMICOLON);
 
-    return std::make_unique<FunctionCallNode>(func_name, std::move(call_args));
-}
+//     return std::make_unique<FunctionCallNode>(func_name, std::move(call_args));
+// }
 
 std::unique_ptr<IfStatementNode> Parser::ParseIfStmt()
 {

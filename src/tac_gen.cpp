@@ -284,9 +284,11 @@ void TacGenVisitor::visit(IfStatementNode& n)
 
 void TacGenVisitor::visit(FunctionCallNode& n)
 {
+    Value t = new_temp_val();
     Instr i;
     i.tag = INSTR_TAG::CALL;
     i.name = n.get_name();
+    i.result = t;
 
     for (auto& arg : n.get_call_args())
     {
@@ -294,6 +296,7 @@ void TacGenVisitor::visit(FunctionCallNode& n)
     }
 
     push_to_func_body(i);
+    _result = t;    
 
     // throw std::runtime_error("TAC: Call is not impl yet.");
 }
@@ -325,6 +328,12 @@ void TacGenVisitor::visit(ArgNode& n)
 
     throw std::runtime_error("TAC: Arg is not impl yet.");
 }
+
+void TacGenVisitor::visit(ExpressionStatement& exp)
+{
+    gen_expr(exp.get_expr());
+}
+
 void TacGenVisitor::visit(TypeNode&)
 {
     throw std::runtime_error("TAC: Type is not impl yet.");

@@ -53,7 +53,7 @@ protected:
     std::unique_ptr<LabelStatement> ParseLabelStmt();
 
     std::unique_ptr<VariableAssignNode> ParseVariableAssign();
-    std::unique_ptr<FunctionCallNode> ParseFunctionCallStmt();
+    // std::unique_ptr<FunctionCallNode> ParseFunctionCallStmt();
 
     std::unique_ptr<IfStatementNode> ParseIfStmt();
     std::unique_ptr<VariableDeclNode> ParseVariableDeclaration();

@@ -49,5 +49,6 @@ public:
     void visit(ArgNode&) override;
     void visit(TypeNode&) override;
     void visit(ExternStatement&) override;
+    void visit(ExpressionStatement&) override;
 
 };

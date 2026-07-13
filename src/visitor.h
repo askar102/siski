@@ -1,6 +1,5 @@
 #pragma once
 
-// forward-декларации всех конкретных нод
 class NumberNode;
 class BinaryExpression;
 class UnaryNode;
@@ -17,6 +16,7 @@ class FuncDeclNode;
 class ArgNode;
 class TypeNode;
 class ExternStatement;
+class ExpressionStatement;
 class RootNode;
 
 class Visitor {
@@ -40,4 +40,5 @@ public:
     virtual void visit(TypeNode&) = 0;
     virtual void visit(RootNode&) = 0;
     virtual void visit(ExternStatement&) = 0;
+    virtual void visit(ExpressionStatement&) = 0;
 };

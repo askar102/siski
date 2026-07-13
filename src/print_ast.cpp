@@ -177,6 +177,13 @@ void PrintAst::visit(TypeNode& n)
     printf("Type: %s%s\n", n.get_type_name().c_str(), n.is_pointer() ? "*" : "");
 };
 
+void PrintAst::visit(ExpressionStatement& exp)
+{
+    pad();
+    printf("Fuck");
+    exp.get_expr()->accept(*this);
+}
+
 void PrintAst::visit(RootNode& n) 
 {
     pad();

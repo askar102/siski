@@ -13,7 +13,7 @@ enum class INSTR_TAG {
     LOAD, // t = load <var_name>
     LABEL, // метка
     JUMP, // бузусловный переход
-    BRANCH_FALSE, // условный переход BRANCH_FALSE <cond>, <label_name>
+    IF_FALSE, // условный переход IF_FALSE <cond>, <label_name>
     CALL, // t = CALL <fn_name>, [args]
     RET // RET <value>
 };

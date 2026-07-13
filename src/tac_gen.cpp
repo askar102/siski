@@ -209,21 +209,39 @@ void TacGenVisitor::visit(VariableDeclNode& n)
     // throw std::runtime_error("TAC: VarDeclNode is not impl yet.");
 }
 
-void TacGenVisitor::visit(IfStatementNode&) 
-{ 
+void TacGenVisitor::visit(IfStatementNode& n) 
+{
+    // Instr i;
+    // i.tag = INSTR_TAG::IF_FALSE; // IF_FALSE <cond>, <branch>
+    // i.lhs = gen_expr(n.get_condition()); // <cond>
+    // i.rhs = n.get_else_block();
+    
+
     throw std::runtime_error("TAC: If is not impl yet."); 
 }
 void TacGenVisitor::visit(FunctionCallNode&)
 {
     throw std::runtime_error("TAC: Call is not impl yet.");
 }
-void TacGenVisitor::visit(GotoStatement&) 
-{ 
-    throw std::runtime_error("TAC: Goto is not impl yet."); 
-}
-void TacGenVisitor::visit(LabelStatement&)
+void TacGenVisitor::visit(GotoStatement& n) 
 {
-    throw std::runtime_error("TAC: Label is not impl yet.");
+    Instr i;
+    i.tag = INSTR_TAG::JUMP;
+    i.name = n.get_name();
+
+    push_to_func_body(i);
+
+    // throw std::runtime_error("TAC: Goto is not impl yet."); 
+}
+void TacGenVisitor::visit(LabelStatement& n)
+{
+    Instr i;
+    i.tag = INSTR_TAG::LABEL;
+    i.name = n.get_name();
+
+    push_to_func_body(i);
+
+    // throw std::runtime_error("TAC: Label is not impl yet.");
 }
 
 void TacGenVisitor::visit(ArgNode&)

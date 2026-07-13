@@ -11,9 +11,11 @@ private:
     TacProgram _prog;
     TacFunc* _curr_func;
     int32_t _temp_counter = 0;
+    int _label_counter = 0;
     Value _result; 
 
     Value new_temp_val() { return Value::Temp("t" + std::to_string(_temp_counter++)); }
+    std::string new_label() { return "L" + std::to_string(_label_counter++); }
     void push_to_func_body(Instr i) { _curr_func->body.push_back(std::move(i)); }
 
     Value gen_expr(ExpressionNode* e) { e->accept(*this); return _result; }

@@ -48,6 +48,27 @@ void TacGenVisitor::dump_tac(const TacProgram& prog)
                     break;
                 }
 
+                case INSTR_TAG::IF_FALSE: {
+                    printf("IF_FALSE %s, %s\n",
+                        val_to_str(i.lhs).c_str(), i.name.c_str()
+                    );
+                    break;
+                }
+
+                case INSTR_TAG::LABEL: {
+                    printf("LABEL %s:\n",
+                        i.name.c_str()
+                    );
+                    break;
+                }
+
+                case INSTR_TAG::JUMP: {
+                    printf("JUMP %s\n",
+                        i.name.c_str()
+                    );
+                    break;
+                }
+
                 default: {
                     throw std::runtime_error(std::format("DUMP_TAC: Cannot display instr '{}'.", i.name));
                 }
@@ -211,17 +232,58 @@ void TacGenVisitor::visit(VariableDeclNode& n)
 
 void TacGenVisitor::visit(IfStatementNode& n) 
 {
-    // Instr i;
-    // i.tag = INSTR_TAG::IF_FALSE; // IF_FALSE <cond>, <branch>
-    // i.lhs = gen_expr(n.get_condition()); // <cond>
-    // i.rhs = n.get_else_block();
-    
+    std::string else_label_name = new_label();
+    std::string end_label_name = new_label();
 
-    throw std::runtime_error("TAC: If is not impl yet."); 
+    // IF STMT
+    Instr i;
+    i.tag = INSTR_TAG::IF_FALSE; // IF_FALSE <cond>, <branch>
+    i.lhs = gen_expr(n.get_condition()); // <cond>
+
+    i.name = else_label_name;
+    push_to_func_body(i);
+
+    // THEN BLOCK
+    n.get_then_block()->accept(*this);
+
+    // SKIP ELSE
+    Instr jmp;
+    jmp.tag = INSTR_TAG::JUMP;
+    jmp.name = end_label_name;
+    push_to_func_body(jmp);
+
+    Instr else_lb;
+    else_lb.tag = INSTR_TAG::LABEL;
+    else_lb.name = else_label_name;
+    push_to_func_body(else_lb);
+
+    if (n.get_else_block())
+    {
+        n.get_else_block()->accept(*this);
+    }
+
+    Instr end_lb;
+    end_lb.tag = INSTR_TAG::LABEL;
+    end_lb.name = end_label_name;
+    push_to_func_body(end_lb);
+
+    // throw std::runtime_error("TAC: If is not impl yet."); 
 }
-void TacGenVisitor::visit(FunctionCallNode&)
+
+void TacGenVisitor::visit(FunctionCallNode& n)
 {
-    throw std::runtime_error("TAC: Call is not impl yet.");
+    Instr i;
+    i.tag = INSTR_TAG::CALL;
+    i.name = n.get_name();
+
+    for (auto& arg : n.get_call_args())
+    {
+        i.args.push_back(gen_expr(arg));
+    }
+
+    push_to_func_body(i);
+
+    // throw std::runtime_error("TAC: Call is not impl yet.");
 }
 void TacGenVisitor::visit(GotoStatement& n) 
 {

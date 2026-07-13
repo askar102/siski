@@ -1,5 +1,5 @@
 #include "ast.h"
-#include "printAst.h"
+#include "print_ast.h"
 
 void PrintAst::visit(NumberNode& n) 
 {

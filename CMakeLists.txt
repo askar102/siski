@@ -9,5 +9,5 @@ add_executable(compiler
     main.cpp 
     src/lexer.cpp
     src/parser.cpp
-    src/printAst.cpp
+    src/print_ast.cpp
 )

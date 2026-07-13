@@ -1,7 +1,7 @@
 #include "src/lexer.h"
 #include "src/parser.h"
 #include "src/log.h"
-#include "src/printAst.h"
+#include "src/print_ast.h"
 
 
 int main() {

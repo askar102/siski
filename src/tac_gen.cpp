@@ -327,10 +327,9 @@ void TacGenVisitor::visit(LabelStatement& n)
 
 void TacGenVisitor::visit(ArgNode& n)
 {
-    // Instr i;
+    // пустой метод, мы парсим прямо в родительском методе, через геттеры
 
-
-    throw std::runtime_error("TAC: Arg is not impl yet.");
+    // throw std::runtime_error("TAC: Arg is not impl yet.");
 }
 
 void TacGenVisitor::visit(ExpressionStatement& exp)
@@ -340,7 +339,9 @@ void TacGenVisitor::visit(ExpressionStatement& exp)
 
 void TacGenVisitor::visit(TypeNode&)
 {
-    throw std::runtime_error("TAC: Type is not impl yet.");
+    // пустой метод, мы парсим прямо в родительском методе, через геттеры
+
+    // throw std::runtime_error("TAC: Type is not impl yet.");
 }
 void TacGenVisitor::visit(ExternStatement&) 
 {

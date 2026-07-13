@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 
+#include "log.h"
+
 class Node {
 protected:
     Node* _parent = nullptr;
@@ -52,8 +54,17 @@ public:
         : _name(name), _type(std::move(type)), _defaultValue(std::move(defVal)) {}
 
     void print(int indent = 0) const override {
-        pad(indent); printf("Arg: %s\n", _name.c_str());
-    }
+        pad(indent); 
+        printf("Arg: %s\n", _name.c_str());
+
+        if (_type) _type->print(indent + 1);
+
+        if (_defaultValue) 
+        {
+            pad(indent + 1); printf("default:\n");
+            _defaultValue->print(indent + 2);
+        }
+}
 };
 
 /* Block node */
@@ -178,7 +189,8 @@ public:
         : _label_name(label_name) {}
 
     void print(int indent = 0) const override {
-        pad(indent); printf("Goto: %s\n", _label_name.c_str());   // и "Label:" во втором
+        pad(indent); 
+        printf("Goto: %s\n", _label_name.c_str()); 
     }
 };
 
@@ -188,9 +200,12 @@ private:
 public:
     LabelStatement(std::string label_name)
         : _label_name(label_name) {}
+
+    void print(int indent = 0) const override {
+        pad(indent);
+        printf("Label: %s\n", _label_name.c_str());
+    }
 };
-
-
 
 class FunctionCallNode : public StatementNode {
 private:
@@ -258,6 +273,14 @@ private:
 public:
     UnaryNode(std::string op, std::unique_ptr<ExpressionNode> val)
         : _op(op), _val(std::move(val)) {}
+
+    void print(int indent = 0) const override {
+        pad(indent); 
+        printf("UnaryNumber: \n");
+        pad(indent + 1);
+        printf("Op: %s\n", _op.c_str());
+        _val->print(indent + 1);
+    }
 };
 
 class ReturnStatement : public StatementNode {

@@ -230,11 +230,6 @@ void Lexer::CheckKeywords(const std::string& keyword) {
             LOG("GOTO: goto\n");
             return;
         }
-        else if (keyword == "label") {
-            _tokens.push_back({TokenType::LABEL, "label"});
-            LOG("LABEL: label\n");
-            return;
-        }
 
         else if (keyword == "return") {
             _tokens.push_back({TokenType::RETURN, "return"});

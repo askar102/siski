@@ -1,7 +1,6 @@
 #include "src/lexer.h"
 #include "src/parser.h"
 #include "src/log.h"
-#include "src/pratt.h"
 
 
 int main() {

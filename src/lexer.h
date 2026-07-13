@@ -9,7 +9,7 @@
 enum TokenType {
     // keywords
     IF, ELSE, 
-    GOTO, LABEL,
+    GOTO,
     RETURN,
 
     // another

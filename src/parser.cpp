@@ -79,6 +79,11 @@ std::string Parser::opChar(TokenType t) const {
         case TokenType::MINUS: return "-";
         case TokenType::STAR:  return "*";
         case TokenType::SLASH: return "/";
+        case TokenType::LESS: return "<";
+        case TokenType::GREATER: return ">";
+        case TokenType::GREATER_EQUAL: return ">=";
+        case TokenType::LESS_EQUAL: return "<=";
+        case TokenType::EQUAL: return "==";
         default: return "?";
     }
 }
@@ -146,7 +151,7 @@ std::unique_ptr<ExpressionNode> Parser::ParseExpression()
 
 std::unique_ptr<StatementNode> Parser::ParseStatement()
 {
-    LOG("ParseStatement at pos=%zu token=%s\n", _curr_token_pos, Peek().text.c_str());
+    // LOG("ParseStatement at pos=%zu token=%s\n", _curr_token_pos, Peek().text.c_str());
 
     if (Check(TokenType::IF)) {
         return ParseIfStmt();
@@ -154,10 +159,6 @@ std::unique_ptr<StatementNode> Parser::ParseStatement()
 
     if (Check(TokenType::GOTO)) {
         return ParseGotoStmt();
-    }
-
-    if (Check(TokenType::LABEL)) {
-        return ParseLabelStmt();
     }
 
     if (Check(TokenType::RETURN)) {
@@ -177,6 +178,10 @@ std::unique_ptr<StatementNode> Parser::ParseStatement()
 
         if (CheckNext(TokenType::ASSIGN)) {
             return ParseVariableAssign();
+        }
+
+        if (CheckNext(TokenType::COLON)) {
+            return ParseLabelStmt();
         }
     }
 
@@ -208,18 +213,17 @@ std::unique_ptr<GotoStatement> Parser::ParseGotoStmt()
     Advance();
 
     Token t = Expect(TokenType::IDENTIFIER);
+    Expect(TokenType::SEMICOLON); 
     return std::make_unique<GotoStatement>(t.text);
 }
 
 std::unique_ptr<LabelStatement> Parser::ParseLabelStmt()
 {
-    Advance();
-
-    Token t = Expect(TokenType::IDENTIFIER);
+    std::string label_name = Advance().text;
 
     Expect(TokenType::COLON);
 
-    return std::make_unique<LabelStatement>(t.text);
+    return std::make_unique<LabelStatement>(label_name);
 }
 
 std::unique_ptr<VariableAssignNode> Parser::ParseVariableAssign()

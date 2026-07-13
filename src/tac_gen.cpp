@@ -41,6 +41,13 @@ void TacGenVisitor::dump_tac(const TacProgram& prog)
                     break;
                 }
 
+                case INSTR_TAG::STORE: {
+                    printf("STORE %s, %s\n",
+                        i.name.c_str(), val_to_str(i.lhs).c_str()
+                    );
+                    break;
+                }
+
                 default: {
                     throw std::runtime_error(std::format("DUMP_TAC: Cannot display instr '{}'.", i.name));
                 }
@@ -175,17 +182,15 @@ void TacGenVisitor::visit(RootNode& root) {
 
 void TacGenVisitor::visit(VariableAssignNode& n)
 {
-    // Value t = new_temp_val();
-    // Instr i;
-    // i.tag = INSTR_TAG::STORE;
-    // i.result = t;
+    Instr i;
+    i.tag = INSTR_TAG::STORE;
 
-    // i.lhs = Value::Var(n.get_var_name());
-    // i.rhs = Value::Const(n.get_value());
+    i.name = n.get_var_name();
+    i.lhs = gen_expr(n.get_value());
 
-    // push_to_func_body(i);
-    // _result = t;
-    throw std::runtime_error("TAC: VarAssignNode is not impl yet.");
+    push_to_func_body(i);
+
+    // throw std::runtime_error("TAC: VarAssignNode is not impl yet.");
 }
 
 void TacGenVisitor::visit(VariableDeclNode& n)

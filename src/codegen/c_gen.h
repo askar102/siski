@@ -56,16 +56,30 @@ private:
     {   
         // const std::basic_string<char, std::char_traits<char>, std::allocator<char>> & str = "{}";
         if (file) {
-            std::fputs("\t", file);
+            // std::fputs("\t", file);
             // fmt.get() ретурнит стринг виев по константе
             // vprint_non... не юзает промежуточный string для чеканья UTF-8, если че то пойдет не так будем юзать
             // std::vprint_unicode 
             std::vprint_nonunicode(file, fmt.get(), std::make_format_args(args...));
 
-            std::fputs("\n", file);
+            // std::fputs("\n", file);
             // std::format аллоцирует basic_string, нам такая хуйня не нужна
             // std::print(file, "    {}", std::format(fmt, std::forward<Args>(args)...));
         }
+    }
+
+    /* Returns: [ INT func_name(int a, int b   ]    
+                                        ^^^
+                                        WITHOUT END. BE DANGEROUS! 
+    */
+    void puts_func(FILE* file, const TacFunc& fn, std::string end_with)
+    {
+        puts_ins(file, "{} {}(", fn.retType, fn.name);
+            for (size_t k = 0; k < fn.params.size(); ++k)
+            {
+                puts_ins(file, "{}{} {}", k ? ", " : "", fn.params[k].type, fn.params[k].name);
+            }
+        puts_ins(file, "){}\n", end_with);
     }
 
 public:

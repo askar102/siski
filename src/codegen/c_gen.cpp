@@ -16,8 +16,6 @@
     void CGen::generate(const AirProgram& prog)
     {
         file = fopen("cgen.c", "w+");
-
-        std::set<std::string> unique_temps;
         
         for (auto& fn : prog.funcs) {
             fprintf(file, "%s %s(", fn.retType.c_str(), fn.name.c_str());
@@ -31,7 +29,7 @@
 
 
         for (auto& fn : prog.funcs) {
-            std::vector<Instr> func_var_decls;
+            std::set<std::string> unique_temps;
             int32_t temp_counter = 0;
 
             fprintf(file, "%s %s(", fn.retType.c_str(), fn.name.c_str());
@@ -41,13 +39,6 @@
             } 
             fprintf(file, ") {\n");
 
-            for (auto& i : fn.body) {
-                if (i.tag == INSTR_TAG::DECL_VAR) {
-                    fprintf(file, "    %s %s = %s;\n", 
-                        i.decl_type.c_str(), i.name.c_str(), val_to_c(i.lhs).c_str());
-                    continue;
-                }
-            }
 
             for (auto& i : fn.body) {
                 if (i.tag == INSTR_TAG::CONST  || i.tag == INSTR_TAG::BINOP || 
@@ -60,21 +51,42 @@
                 }
             }
 
+            std::set<std::string> user_vars;
+            for (auto& i : fn.body) {
+                if (i.tag == INSTR_TAG::DECL_VAR) {
+                    fprintf(file, "    %s %s;\n", i.decl_type.c_str(), i.name.c_str());
+                }
+            }
+
             for (const auto& temp_name : unique_temps) {
                 fprintf(file, "    int %s;\n", temp_name.c_str());
             }
 
+            // for (auto& i : fn.body) {
+            //     if (i.tag == INSTR_TAG::DECL_VAR) {
+            //         fprintf(file, "    %s %s = %s;\n", 
+            //             i.decl_type.c_str(), i.name.c_str(), val_to_c(i.lhs).c_str());
+            //         continue;
+            //     }
+            // }
+
             for (auto& i : fn.body) {
                 switch (i.tag) {
                     case INSTR_TAG::CONST: {
-                        fprintf(file, "    %s = %d;\n", i.result.name.c_str(), i.lhs.constVal);
+                        // std::println(file, " {} = {};", i.result.name, i.lhs.constVal);
+                        fprintf(file,"    %s = %d;\n", 
+                                i.result.name.c_str(),
+                                i.lhs.constVal
+                        );
                         break;
                     }
                         
-                    case INSTR_TAG::BINOP:
-                        fprintf(file, "    %s = %s %s %s;\n", i.result.name.c_str(),
-                            val_to_c(i.lhs).c_str(), i.op.c_str(), val_to_c(i.rhs).c_str());
+                    case INSTR_TAG::BINOP: {
+                        fprintf(file, "    %s = %s %s %s;\n", 
+                            i.result.name.c_str(), val_to_c(i.lhs).c_str(), i.op.c_str(), val_to_c(i.rhs).c_str());
                         break;
+                    }
+                        
                     case INSTR_TAG::UNARY:
                         fprintf(file, "    %s = %s%s;\n", i.result.name.c_str(),
                             i.op.c_str(), val_to_c(i.lhs).c_str());
@@ -85,10 +97,10 @@
                     case INSTR_TAG::STORE:
                         fprintf(file, "    %s = %s;\n", i.name.c_str(), val_to_c(i.lhs).c_str());
                         break;
-                    // case INSTR_TAG::DECL_VAR:
-                    //     fprintf(file, "    %s %s = %s;\n", i.decl_type.c_str(),
-                    //         i.name.c_str(), val_to_c(i.lhs).c_str());
-                    //     break;
+                    case INSTR_TAG::DECL_VAR:
+                        fprintf(file, "    %s = %s;\n",
+                            i.name.c_str(), val_to_c(i.lhs).c_str());
+                        break;
                     case INSTR_TAG::CALL: {
                         fprintf(file, "    %s = %s(", i.result.name.c_str(), i.name.c_str());
                         for (size_t k = 0; k < i.args.size(); ++k)

@@ -1,7 +1,6 @@
-/* THIS_CODE_GIVE_ME_UB */
 int loop(int i) {
     loop:
-        if (i == 10) {
+        if (i > 10) {
             goto end_loop;
         }
         i = i + 1;

@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <format>
 #include <fstream>
+#include <print>
 
 #include <set>
 
@@ -49,6 +50,7 @@ private:
     FILE* file;
 
     std::string val_to_c(const Value& val);
+
 public:
     void generate(const AirProgram& prog);
 };

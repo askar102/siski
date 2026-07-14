@@ -1,6 +1,9 @@
 #include <stdint.h>
 
 int32_t loop(int32_t i);
+int32_t test_type(int32_t a, uint8_t b);
+uint16_t test_return();
+void test_void();
 int32_t main();
 
 int32_t loop(int32_t i) {
@@ -29,23 +32,56 @@ end_loop:
 	return t6;
 }
 
-int32_t main() {
-	int32_t t10;
-	uint8_t t11;
-	int32_t t12;
-	int32_t t13;
+int32_t test_type(int32_t a, uint8_t b) {
 	int32_t t8;
-	int32_t t9;
-	uint8_t lol;
-	int32_t res;
 	t8 = 10;
-	lol = t8;
+	return t8;
+}
+
+uint16_t test_return() {
+	uint16_t t10;
+	int32_t t9;
+	uint16_t ret;
 	t9 = 10;
-	t11 = lol;
-	t10 = loop(	t11);
-	t12 = t9 + t10;
-	res = t12;
-	t13 = res;
-	return t13;
+	ret = t9;
+	t10 = ret;
+	return t10;
+}
+
+void test_void() {
+	int32_t t11;
+	int32_t t12;
+	int32_t ret;
+	t11 = 10;
+	ret = t11;
+	t12 = ret;
+	return t12;
+}
+
+int32_t main() {
+	int32_t t13;
+	int32_t t14;
+	int32_t t15;
+	int32_t t16;
+	int32_t t17;
+	int32_t t18;
+	uint8_t t19;
+	void t20;
+	int32_t t21;
+	int32_t res;
+	uint8_t lol;
+	t13 = 10;
+	t14 = 10;
+	t15 = t13 + t14;
+	res = t15;
+	t16 = 10;
+	lol = t16;
+	t18 = res;
+	t19 = lol;
+	t17 = test_type(	t18	, t19);
+	res = t17;
+	t20 = test_void();
+	t21 = res;
+	return t21;
 }
 

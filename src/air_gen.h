@@ -7,6 +7,11 @@
 #include <format>
 #include <print>
 
+struct Arg {
+    std::string name;
+    std::string type;
+};
+
 class AirGenerator {
 private:
     TacProgram _prog;

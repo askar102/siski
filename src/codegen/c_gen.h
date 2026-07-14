@@ -71,7 +71,7 @@ private:
 
     /* Returns: [ INT func_name(int a, int b   ]    
     ..................................................................^^^
-    WITHOUT END. BE DANGEROUS! 
+     WITHOUT END. BE DANGEROUS! 
     */
     void puts_func(FILE* file, const TacFunc& fn, std::string end_with)
     {

@@ -204,7 +204,25 @@ void TacGenVisitor::visit(FuncDeclNode& n)
 
     _prog.funcs.push_back(std::move(tf));
     _curr_func = &_prog.funcs.back();
-    _temp_counter = 0;
+
+    // for (auto& arg : n.get_args())
+    // {
+    //     Instr i;
+    //     i.tag = INSTR_TAG::DECL_VAR;
+    //     i.name = arg->get_name();
+    //     i.decl_type = arg->get_type()->get_type_name();
+        
+    //     if (arg->get_def_val()) 
+    //     {
+    //         i.lhs = gen_expr(arg->get_def_val());
+    //     }
+    //     else
+    //     {
+    //         i.lhs = Value::Const(0);
+    //     }
+
+    //     push_to_func_body(i);
+    // }
 
     if (n.get_block())
     {

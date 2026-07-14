@@ -1,15 +1,17 @@
-int foo(int huy) {
-    return 1;
+/* THIS_CODE_GIVE_ME_UB */
+int loop(int i) {
+    loop:
+        if (i == 10) {
+            goto end_loop;
+        }
+        i = i + 1;
+    goto loop;
+
+    end_loop:
+        return i;
 }
 
 int main() {
-    if (10 < 11) {
-        return 10 + 10;
-    }
-    else
-    {
-        int lol = foo(30);
-        int res = 1;
-        return res;
-    }
+    int res = loop(1);
+    return res;
 }

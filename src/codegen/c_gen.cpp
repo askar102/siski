@@ -43,7 +43,7 @@
 
             for (auto& i : fn.body) {
                 if (i.tag == INSTR_TAG::DECL_VAR) {
-                    fprintf(file, "    %s %s;\n", 
+                    fprintf(file, "    %s %s = %s;\n", 
                         i.decl_type.c_str(), i.name.c_str(), val_to_c(i.lhs).c_str());
                     continue;
                 }

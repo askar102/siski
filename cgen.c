@@ -1,15 +1,35 @@
-int foo(int huy);
+int loop(int i);
 int main();
 
-int foo(int huy) {
+int loop(int i) {
     int t0;
-    t0 = 1;
-    return t0;
+    int t1;
+    int t2;
+    int t3;
+    int t4;
+    int t5;
+    int t6;
+loop:
+    t0 = i;
+    t1 = 10;
+    t2 = t0 == t1;
+    if (!t2) goto L0;
+    goto end_loop;
+    goto L1;
+L0:
+L1:
+    t3 = i;
+    t4 = 1;
+    t5 = t3 + t4;
+    i = t5;
+    goto loop;
+end_loop:
+    t6 = i;
+    return t6;
 }
 
 int main() {
-    int lol;
-    int res;
+    int res = t7;
     int t0;
     int t1;
     int t2;
@@ -20,21 +40,9 @@ int main() {
     int t7;
     int t8;
     int t9;
-    t0 = 10;
-    t1 = 11;
-    t2 = t0 < t1;
-    if (!t2) goto L0;
-    t3 = 10;
-    t4 = 10;
-    t5 = t3 + t4;
-    return t5;
-    goto L1;
-L0:
-    t7 = 30;
-    t6 = foo(t7);
     t8 = 1;
+    t7 = loop(t8);
     t9 = res;
     return t9;
-L1:
 }
 

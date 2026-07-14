@@ -32,8 +32,8 @@ int main() {
 
         LOG(" [START OF AIR]\n");
 
-        AirGenerator air_gen;
-        AirProgram air_out = air_gen.analyze(tac);
+        AirGenerator air_gen(tac);
+        AirProgram air_out = air_gen.analyze();
         TacGenVisitor::dump_tac(air_out.get_prog());
 
         CGen gen;

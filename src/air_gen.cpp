@@ -1,10 +1,10 @@
 #include "air_gen.h"
 #include "air.h"
 #include "tac.h"
+#include <stdexcept>
 
-AirProgram AirGenerator::analyze(TacProgram prog)
+AirProgram AirGenerator::analyze()
 {
-    _prog = std::move(prog);
     dead_code_remove();
     type_check();
     return _prog;
@@ -100,9 +100,24 @@ void AirGenerator::type_check()
 
                 case INSTR_TAG::BINOP:
                 {
-                    std::string t = operand_type(i.lhs, temp_types, var_types);
-                    i.result.data_type = t;
-                    temp_types[i.result.name] = t;
+                    std::string type_op1 = operand_type(i.lhs, temp_types, var_types);
+                    std::string type_op2 = operand_type(i.rhs, temp_types, var_types);
+
+                    if (type_op1 == type_op2)
+                    {
+                        i.result.data_type = type_op1;
+                        temp_types[i.result.name] = type_op1;
+                    }
+                    else {
+                        // TODO: make own panic()
+                        throw std::runtime_error(std::format("AIR: It seems to me that type '{}' differs from '{}'", type_op1, type_op2));
+                    }
+            
+                    break;
+                }
+
+                case INSTR_TAG::STORE:
+                {
                     break;
                 }
 

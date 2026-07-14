@@ -19,6 +19,8 @@
     {
         file = fopen("cgen.c", "w+");
 
+        puts_ins(file, "#include <stdint.h>\n\n");
+
         for (auto& fn : prog.get_funcs()) {
             // puts_ins(file, "{} {}(", fn.retType, fn.name);
             // for (size_t k = 0; k < fn.params.size(); ++k)
@@ -33,7 +35,7 @@
 
 
         for (auto& fn : prog.get_funcs()) {
-            std::set<std::string> unique_temps;
+            // std::set<std::string> unique_temps;
             int32_t temp_counter = 0;
 
             // fprintf(file, "%s %s(", fn.retType.c_str(), fn.name.c_str());
@@ -46,26 +48,29 @@
             puts_func(file, fn, " {");
 
 
-            for (auto& i : fn.body) {
-                if (i.tag == INSTR_TAG::CONST  || i.tag == INSTR_TAG::BINOP || 
-                    i.tag == INSTR_TAG::UNARY  || i.tag == INSTR_TAG::LOAD  || 
-                    i.tag == INSTR_TAG::CALL) 
+            std::map<std::string, std::string> temp_types;
+            for (auto& i : fn.body)
+            {
+                if (!i.result.name.empty() && i.result.type == VALUE_TYPE::TEMP)
                 {
-                    if (!i.result.name.empty() && i.result.type == VALUE_TYPE::TEMP) {
-                        unique_temps.insert(i.result.name);
-                    }
+                    temp_types[i.result.name] = i.result.data_type.empty() ? "I32" : i.result.data_type;
                 }
+            }
+
+            for (auto& [name, type] : temp_types)
+            {
+                puts_ins(file, "\t{} {};\n", to_c_type(type), name);
             }
 
             for (auto& i : fn.body) {
                 if (i.tag == INSTR_TAG::DECL_VAR) {
-                    puts_ins(file, "\t{} {};\n", i.decl_type, i.name);
+                    puts_ins(file, "\t{} {};\n", to_c_type(i.decl_type), i.name);
                 }
             }
 
-            for (const auto& temp_name : unique_temps) {
-                puts_ins(file, "\tint {};\n", temp_name);
-            }
+            // for (const auto& temp_name : unique_temps) {
+            //     puts_ins(file, "\tint {};\n", temp_name);
+            // }
 
             // for (auto& i : fn.body) {
             //     if (i.tag == INSTR_TAG::DECL_VAR) {

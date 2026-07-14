@@ -1,4 +1,4 @@
-int loop(int i) {
+I32 loop(I32 i) {
     loop:
         if (i > 10) {
             goto end_loop;
@@ -9,11 +9,12 @@ int loop(int i) {
     end_loop:
         return i;
     fuck_lb:
-        int L = 12313132;
+        I32 L = 12313132;
 }
 
-int main() {
-    int res = loop(1);
+I32 main() {
+    U8 lol = 10;
+    I32 res = 10 + loop(lol);
     return res;
 }
 

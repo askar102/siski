@@ -1,14 +1,16 @@
-int loop(int i);
-int main();
+#include <stdint.h>
 
-int loop(int i) {
-	int t0;
-	int t1;
-	int t2;
-	int t3;
-	int t4;
-	int t5;
-	int t6;
+int32_t loop(int32_t i);
+int32_t main();
+
+int32_t loop(int32_t i) {
+	int32_t t0;
+	int32_t t1;
+	int32_t t2;
+	int32_t t3;
+	int32_t t4;
+	int32_t t5;
+	int32_t t6;
 loop:
 	t0 = i;
 	t1 = 10;
@@ -27,15 +29,23 @@ end_loop:
 	return t6;
 }
 
-int main() {
-	int res;
-	int t10;
-	int t8;
-	int t9;
-	t9 = 1;
-	t8 = loop(	t9);
-	res = t8;
-	t10 = res;
-	return t10;
+int32_t main() {
+	int32_t t10;
+	uint8_t t11;
+	int32_t t12;
+	int32_t t13;
+	int32_t t8;
+	int32_t t9;
+	uint8_t lol;
+	int32_t res;
+	t8 = 10;
+	lol = t8;
+	t9 = 10;
+	t11 = lol;
+	t10 = loop(	t11);
+	t12 = t9 + t10;
+	res = t12;
+	t13 = res;
+	return t13;
 }
 

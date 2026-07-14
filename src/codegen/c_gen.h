@@ -7,6 +7,7 @@
 #include <format>
 #include <fstream>
 #include <print>
+#include <map>
 
 #include <set>
 
@@ -69,17 +70,33 @@ private:
     }
 
     /* Returns: [ INT func_name(int a, int b   ]    
-                                        ^^^
-                                        WITHOUT END. BE DANGEROUS! 
+    ..................................................................^^^
+    WITHOUT END. BE DANGEROUS! 
     */
     void puts_func(FILE* file, const TacFunc& fn, std::string end_with)
     {
-        puts_ins(file, "{} {}(", fn.retType, fn.name);
+        puts_ins(file, "{} {}(", to_c_type(fn.retType), fn.name);
             for (size_t k = 0; k < fn.params.size(); ++k)
             {
-                puts_ins(file, "{}{} {}", k ? ", " : "", fn.params[k].type, fn.params[k].name);
+                puts_ins(file, "{}{} {}", k ? ", " : "", to_c_type(fn.params[k].type), fn.params[k].name);
             }
         puts_ins(file, "){}\n", end_with);
+    }
+
+    std::string to_c_type(const std::string& t)
+    {
+        if (t == "I8")  return "int8_t";
+        if (t == "I16") return "int16_t";
+        if (t == "I32") return "int32_t";
+        if (t == "I64") return "int64_t";
+        if (t == "U8")  return "uint8_t";
+        if (t == "U16") return "uint16_t";
+        if (t == "U32") return "uint32_t";
+        if (t == "U64") return "uint64_t";
+        if (t == "U0") return "void";
+
+        if (t == "int") return "int";
+        else return t;
     }
 
 public:

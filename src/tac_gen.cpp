@@ -192,7 +192,7 @@ void TacGenVisitor::visit(FuncDeclNode& n)
 {
     TacFunc tf;
     tf.name = n.get_name();
-    tf.retType = "int";
+    tf.retType = n.get_ret_type()->get_type_name();
     for (auto& arg : n.get_args())
     {
         tf.params.push_back((Param){

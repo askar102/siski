@@ -3,6 +3,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <format>
 
 class AirGenerator {
 private:
@@ -14,7 +15,7 @@ public:
     AirGenerator(TacProgram prog)
         : _prog(prog) {}
 
-    AirProgram analyze(TacProgram prog);
+    AirProgram analyze();
     void dead_code_remove();
     void type_check();
 };

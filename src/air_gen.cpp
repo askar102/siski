@@ -1,21 +1,45 @@
 #include "air_gen.h"
+#include "air.h"
 #include "tac.h"
 
 AirProgram AirGenerator::analyze(TacProgram prog)
 {
-    for (auto& fn : prog.funcs) {
+    _prog = std::move(prog);
+    dead_code_remove();
+    type_check();
+    return _prog;
+}
+
+void AirGenerator::dead_code_remove()
+{
+    for (auto& fn : _prog.funcs) {
+        std::set<std::string> used;
+        for (auto& i : fn.body)
+        {
+            if (i.tag == INSTR_TAG::JUMP || i.tag == INSTR_TAG::IF_FALSE)
+            {
+                used.insert(i.name);
+            }
+        }
+
         std::vector<Instr> cleaned;
         bool reachable = true;
 
-        // 1. dead code after JUMP/RET ( то ест убираем те до которых управление не доходит )
-        for (auto& i : fn.body) {
-            if (i.tag == INSTR_TAG::LABEL) {
-                reachable = true;
-                cleaned.push_back(i);
-                continue; 
+        for (auto& i : fn.body) 
+        {
+            if (i.tag == INSTR_TAG::LABEL) 
+            {
+                if (used.count(i.name)) 
+                {
+                    reachable = true;
+                    cleaned.push_back(i);
+                }
+                
+                continue;
             }
 
-            if (!reachable) {
+            if (!reachable)
+            {
                 continue;
             }
 
@@ -25,10 +49,94 @@ AirProgram AirGenerator::analyze(TacProgram prog)
             {
                 reachable = false;
             }
+
         }
 
         fn.body = std::move(cleaned);
-    } 
+    }
+}
 
-    return prog;
+void AirGenerator::type_check()
+{
+    std::map<std::string, std::string> func_ret;
+    for (auto& fn : _prog.funcs)
+    {
+        func_ret[fn.name] = fn.retType;
+    }
+
+    for (auto& fn : _prog.funcs)
+    {
+        std::map<std::string, std::string> var_types;
+        std::map<std::string, std::string> temp_types;
+
+        for (auto& p : fn.params)
+        {
+            var_types[p.name] = p.type;
+        }
+
+        for (auto& i : fn.body)
+        {
+            switch(i.tag) {
+
+                case INSTR_TAG::DECL_VAR: 
+                {
+                    var_types[i.name] = i.decl_type;
+                    break;
+                }
+
+                case INSTR_TAG::CONST:
+                {
+                    var_types[i.result.name] = "I32";
+                    break;
+                }
+
+                case INSTR_TAG::LOAD:
+                {
+                    std::string t = var_types.count(i.name) ? var_types[i.name] : "I32";
+                    i.result.data_type = t;
+                    temp_types[i.result.name] = t;
+                    break;
+                }
+
+                case INSTR_TAG::BINOP:
+                {
+                    std::string t = operand_type(i.lhs, temp_types, var_types);
+                    i.result.data_type = t;
+                    temp_types[i.result.name] = t;
+                    break;
+                }
+
+                case INSTR_TAG::UNARY:
+                {
+                    std::string t = operand_type(i.lhs, temp_types, var_types);
+                    i.result.data_type = t;
+                    temp_types[i.result.name] = t;
+                    break;
+                }
+
+                case INSTR_TAG::CALL:
+                {
+                    std::string t = func_ret.count(i.name) ? func_ret[i.name] : "I32";
+                    i.result.data_type = t;
+                    temp_types[i.result.name] = t;
+                    break;
+                }
+
+                default: break;
+            }
+        }
+    }
+}
+
+std::string AirGenerator::operand_type( const Value& v, std::map<std::string,std::string>& temp_types, std::map<std::string,std::string>& var_types)
+{
+    switch (v.type) {
+        case VALUE_TYPE::CONST: 
+            return "i32";
+        case VALUE_TYPE::TEMP:
+            return temp_types.count(v.name) ? temp_types[v.name] : "I32";
+        case VALUE_TYPE::VAR:
+            return var_types.count(v.name) ? var_types[v.name] : "I32";
+    }
+    return "i32";
 }

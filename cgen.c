@@ -15,7 +15,6 @@ loop:
 	t2 = t0 > t1;
 	if (!t2) goto L0;
 	goto end_loop;
-	goto L1;
 L0:
 L1:
 	t3 = i;
@@ -30,13 +29,13 @@ end_loop:
 
 int main() {
 	int res;
-	int t7;
+	int t10;
 	int t8;
 	int t9;
-	t8 = 1;
-	t7 = loop(	t8);
-	res = t7;
-	t9 = res;
-	return t9;
+	t9 = 1;
+	t8 = loop(	t9);
+	res = t8;
+	t10 = res;
+	return t10;
 }
 

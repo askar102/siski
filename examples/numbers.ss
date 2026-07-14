@@ -8,6 +8,8 @@ int loop(int i) {
 
     end_loop:
         return i;
+    fuck_lb:
+        int L = 12313132;
 }
 
 int main() {

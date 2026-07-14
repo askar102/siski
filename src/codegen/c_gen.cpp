@@ -19,7 +19,7 @@
     {
         file = fopen("cgen.c", "w+");
 
-        for (auto& fn : prog.funcs) {
+        for (auto& fn : prog.get_funcs()) {
             // puts_ins(file, "{} {}(", fn.retType, fn.name);
             // for (size_t k = 0; k < fn.params.size(); ++k)
             // {
@@ -32,7 +32,7 @@
         puts_ins(file, "\n");
 
 
-        for (auto& fn : prog.funcs) {
+        for (auto& fn : prog.get_funcs()) {
             std::set<std::string> unique_temps;
             int32_t temp_counter = 0;
 

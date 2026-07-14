@@ -4,7 +4,7 @@
 // #include "src/print_ast.h"
 #include "src/tac_gen.h"
 
-#include "src/air.h"
+#include "src/air_gen.h"
 #include "src/codegen/c_gen.h"
 
 
@@ -30,8 +30,11 @@ int main() {
         TacProgram tac = tac_gen.gen(*ast);
         TacGenVisitor::dump_tac(tac);
 
+        LOG(" [START OF AIR]\n");
+
         AirGenerator air_gen;
         AirProgram air_out = air_gen.analyze(tac);
+        TacGenVisitor::dump_tac(air_out.get_prog());
 
         CGen gen;
         gen.generate(air_out);

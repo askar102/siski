@@ -2,15 +2,17 @@
 
 #include "tac.h"
 
-using AirProgram = TacProgram;
 
-// struct AirProgram 
-// {
-//     TacProgram prog;
-// };
-
-class AirGenerator {
+class AirProgram {
+private:
+    TacProgram _prog;
 public:
-    AirProgram analyze(TacProgram prog);
+    AirProgram(TacProgram prog)
+        : _prog(std::move(prog)) {}
 
+    const std::vector<TacFunc>& get_funcs() const { return _prog.funcs; }
+    std::vector<TacFunc>& get_funcs() { return _prog.funcs; }
+
+    const TacProgram& get_prog() const { return _prog; }
 };
+

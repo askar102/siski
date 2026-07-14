@@ -51,6 +51,23 @@ private:
 
     std::string val_to_c(const Value& val);
 
+    template<typename... Args>
+    void puts_ins(FILE* file, std::format_string<Args...> fmt, Args&& ...args)
+    {   
+        // const std::basic_string<char, std::char_traits<char>, std::allocator<char>> & str = "{}";
+        if (file) {
+            std::fputs("\t", file);
+            // fmt.get() ретурнит стринг виев по константе
+            // vprint_non... не юзает промежуточный string для чеканья UTF-8, если че то пойдет не так будем юзать
+            // std::vprint_unicode 
+            std::vprint_nonunicode(file, fmt.get(), std::make_format_args(args...));
+
+            std::fputs("\n", file);
+            // std::format аллоцирует basic_string, нам такая хуйня не нужна
+            // std::print(file, "    {}", std::format(fmt, std::forward<Args>(args)...));
+        }
+    }
+
 public:
     void generate(const AirProgram& prog);
 };

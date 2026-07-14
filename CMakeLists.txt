@@ -15,3 +15,5 @@ add_executable(compiler
     
     src/codegen/c_gen.cpp
 )
+
+target_link_libraries(compiler PRIVATE stdc++exp)

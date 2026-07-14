@@ -1,4 +1,6 @@
 #include "c_gen.h"
+#include <cstdio>
+#include <ios>
 #include <string>
 
     std::string CGen::val_to_c(const Value& v)
@@ -16,7 +18,7 @@
     void CGen::generate(const AirProgram& prog)
     {
         file = fopen("cgen.c", "w+");
-        
+
         for (auto& fn : prog.funcs) {
             fprintf(file, "%s %s(", fn.retType.c_str(), fn.name.c_str());
             for (size_t k = 0; k < fn.params.size(); ++k)
@@ -72,57 +74,82 @@
 
             for (auto& i : fn.body) {
                 switch (i.tag) {
-                    case INSTR_TAG::CONST: {
+                    case INSTR_TAG::CONST: 
+                    {
                         // std::println(file, " {} = {};", i.result.name, i.lhs.constVal);
-                        fprintf(file,"    %s = %d;\n", 
-                                i.result.name.c_str(),
-                                i.lhs.constVal
-                        );
+                        puts_ins(file, "{} = {};\n", i.result.name, i.lhs.constVal);
                         break;
                     }
                         
-                    case INSTR_TAG::BINOP: {
-                        fprintf(file, "    %s = %s %s %s;\n", 
-                            i.result.name.c_str(), val_to_c(i.lhs).c_str(), i.op.c_str(), val_to_c(i.rhs).c_str());
+                    case INSTR_TAG::BINOP: 
+                    {
+                        puts_ins(file, "{} = {} {} {};\n", i.result.name, val_to_c(i.lhs), i.op, val_to_c(i.rhs));
                         break;
                     }
                         
-                    case INSTR_TAG::UNARY:
-                        fprintf(file, "    %s = %s%s;\n", i.result.name.c_str(),
-                            i.op.c_str(), val_to_c(i.lhs).c_str());
+                    case INSTR_TAG::UNARY: 
+                    {
+                        puts_ins(file, "{} = {}{};\n", i.result.name, i.op, val_to_c(i.lhs));
                         break;
-                    case INSTR_TAG::LOAD:
-                        fprintf(file, "    %s = %s;\n", i.result.name.c_str(), i.name.c_str());
+                    }
+
+                    case INSTR_TAG::LOAD: 
+                    {
+                        puts_ins(file, "{} = {};\n", i.result.name, i.name);
                         break;
-                    case INSTR_TAG::STORE:
-                        fprintf(file, "    %s = %s;\n", i.name.c_str(), val_to_c(i.lhs).c_str());
+                    }
+
+                    case INSTR_TAG::STORE: 
+                    {
+                        puts_ins(file, "{} = {}\n", i.name, val_to_c(i.lhs));
                         break;
-                    case INSTR_TAG::DECL_VAR:
-                        fprintf(file, "    %s = %s;\n",
-                            i.name.c_str(), val_to_c(i.lhs).c_str());
+                    }
+
+                    case INSTR_TAG::DECL_VAR: 
+                    {
+                        puts_ins(file, "{} = {}\n", i.name, val_to_c(i.lhs));
                         break;
-                    case INSTR_TAG::CALL: {
-                        fprintf(file, "    %s = %s(", i.result.name.c_str(), i.name.c_str());
+                    }
+                    
+                    case INSTR_TAG::CALL: 
+                    {
+                        puts_ins(file, "{} = {}(", i.result.name, i.name);
+
                         for (size_t k = 0; k < i.args.size(); ++k)
-                            fprintf(file, "%s%s", k ? ", " : "", val_to_c(i.args[k]).c_str());
-                        fprintf(file, ");\n");
+                        {
+                            puts_ins(file, "{}{}", k ? ", " : "", val_to_c(i.args[k]));
+                        }
+
+                        puts_ins(file, ");\n");
                         break;
                     }
+
                     case INSTR_TAG::RET:
-                        fprintf(file, "    return %s;\n", val_to_c(i.lhs).c_str());
+                    {
+                        puts_ins(file, "return {};\n", val_to_c(i.lhs));
                         break;
+                    }
+                        
                     case INSTR_TAG::LABEL:
-                        fprintf(file, "%s:\n", i.name.c_str());
+                    {
+                        puts_ins(file, "{}:\n", i.name);
                         break;
+                    }
+                       
                     case INSTR_TAG::JUMP:
-                        fprintf(file, "    goto %s;\n", i.name.c_str());
+                    {
+                        puts_ins(file, "goto {}:\n", i.name);
                         break;
+                    }
+                        
                     case INSTR_TAG::IF_FALSE:
-                        fprintf(file, "    if (!%s) goto %s;\n", val_to_c(i.lhs).c_str(), i.name.c_str());
+                    {
+                        puts_ins(file, "if (!{}) goto {};\n", val_to_c(i.lhs), i.name);
                         break;
+                    }
                 }
             }
-            fprintf(file, "}\n\n");
+            puts_ins(file, "{}\n\n", "}");
         }
 
         fclose(file);

@@ -8,7 +8,7 @@ void TacGenVisitor::dump_tac(const TacProgram& prog)
 {
     for (auto& fn : prog.funcs)
     {
-        printf("FUNC %s(type: %s):\n", fn.name.c_str(), fn.retType.c_str());
+        printf("FUNC %s(ret_type: %s):\n", fn.name.c_str(), fn.retType.c_str());
         for (auto& i : fn.body)
         {
             switch (i.tag) {

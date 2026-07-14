@@ -51,13 +51,12 @@
                     i.tag == INSTR_TAG::UNARY  || i.tag == INSTR_TAG::LOAD  || 
                     i.tag == INSTR_TAG::CALL) 
                 {
-                    if (!i.result.name.empty() && i.result.name[0] == 't') {
+                    if (!i.result.name.empty() && i.result.type == VALUE_TYPE::TEMP) {
                         unique_temps.insert(i.result.name);
                     }
                 }
             }
 
-            std::set<std::string> user_vars;
             for (auto& i : fn.body) {
                 if (i.tag == INSTR_TAG::DECL_VAR) {
                     puts_ins(file, "\t{} {};\n", i.decl_type, i.name);
@@ -121,7 +120,7 @@
 
                         for (size_t k = 0; k < i.args.size(); ++k)
                         {
-                            puts_ins(file, "\{}{}", k ? ", " : "", val_to_c(i.args[k]));
+                            puts_ins(file, "\t{}{}", k ? ", " : "", val_to_c(i.args[k]));
                         }
 
                         puts_ins(file, ");\n");

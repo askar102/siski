@@ -4,6 +4,10 @@
 
 using AirProgram = TacProgram;
 
+// struct AirProgram 
+// {
+//     TacProgram prog;
+// };
 
 class AirGenerator {
 public:

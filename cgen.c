@@ -34,7 +34,7 @@ int main() {
 	int t8;
 	int t9;
 	t8 = 1;
-	t7 = loop(t8);
+	t7 = loop(	t8);
 	res = t7;
 	t9 = res;
 	return t9;

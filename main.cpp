@@ -40,6 +40,6 @@ int main() {
         gen.generate(air_out);
 
     } catch (const std::exception& e) {
-        printf("PARSE ERROR: %s\n", e.what());
+        printf("\e[1;31mPARSE ERROR:\e[0m %s\n", e.what());
     }
 }

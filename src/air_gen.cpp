@@ -109,8 +109,7 @@ void AirGenerator::type_check()
                         temp_types[i.result.name] = type_op1;
                     }
                     else {
-                        // TODO: make own panic()
-                        throw std::runtime_error(std::format("AIR: It seems to me that type '{}' differs from '{}'", type_op1, type_op2));
+                        type_err(type_op1, type_op2);
                     }
             
                     break;
@@ -118,6 +117,14 @@ void AirGenerator::type_check()
 
                 case INSTR_TAG::STORE:
                 {
+                    std::string var_type = var_types[i.name];
+                    std::string temp_type = operand_type(i.lhs, temp_types, var_types);
+
+                    if (var_type != temp_type)
+                    {
+                        // type_err(var_type, temp_type);
+                        throw std::runtime_error(std::format("AIR: ({} is '{}') It seems to me that type '{}' differs from '{}'", i.lhs.name, temp_type, var_type, temp_type));
+                    }
                     break;
                 }
 

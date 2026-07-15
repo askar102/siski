@@ -60,6 +60,7 @@ void AirGenerator::type_check()
 {
     std::map<std::string, std::vector<Arg>> func_arg_types;
     std::map<std::string, std::string> func_ret;
+    std::set<std::string> void_names;
     for (auto& fn : _prog.funcs)
     {
         func_ret[fn.name] = fn.retType;

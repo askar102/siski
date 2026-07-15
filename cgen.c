@@ -64,7 +64,6 @@ int32_t main() {
 	int32_t t16;
 	int32_t t17;
 	uint8_t t18;
-	void t19;
 	int32_t t20;
 	int32_t res;
 	uint8_t lol;

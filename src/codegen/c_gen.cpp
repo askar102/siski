@@ -23,6 +23,8 @@ void CGen::generate(const AirProgram& prog)
 
     puts_ins(file, "#include <stdint.h>\n\n");
 
+    std::map<std::string, std::string> func_types;
+ 
     for (auto& fn : prog.get_funcs()) {
         // puts_ins(file, "{} {}(", fn.retType, fn.name);
         // for (size_t k = 0; k < fn.params.size(); ++k)
@@ -30,7 +32,7 @@ void CGen::generate(const AirProgram& prog)
         //     puts_ins(file, "{}{} {}", k ? ", " : "", fn.params[k].type, fn.params[k].name);
         // }
         // puts_ins(file, ");\n");
-
+        func_types[fn.name] = fn.retType;
         puts_func(file, fn, ";");
     }
     puts_ins(file, "\n");
@@ -49,7 +51,6 @@ void CGen::generate(const AirProgram& prog)
         // fprintf(file, ") {\n");
         puts_func(file, fn, " {");
 
-
         std::map<std::string, std::string> temp_types;
         for (auto& i : fn.body)
         {
@@ -61,6 +62,12 @@ void CGen::generate(const AirProgram& prog)
 
         for (auto& [name, type] : temp_types)
         {
+            // void check
+            if (type == "U0")
+            {
+                continue;
+            }
+
             puts_ins(file, "\t{} {};\n", to_c_type(type), name);
         }
 
@@ -124,7 +131,7 @@ void CGen::generate(const AirProgram& prog)
                 case INSTR_TAG::CALL: 
                 {
                     // void check
-                    if (i.result.data_type == "U0") 
+                    if (func_types[i.name] == "U0") 
                     {
                         puts_ins(file, "\t{}(", i.name);
                     }

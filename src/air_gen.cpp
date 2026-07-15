@@ -118,8 +118,8 @@ void AirGenerator::type_check()
                                 "AIR: DECL_VAR: cannot init '{}' (type '{}') with value of type '{}'",
                                 i.name, i.decl_type, init_type));
                         }
-                        break;
                     }
+                    break;
                 }
 
                 case INSTR_TAG::CONST:

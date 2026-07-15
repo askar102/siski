@@ -23,7 +23,7 @@ U16 test_return() {
 
 U0 test_void() {
     I32 ret = 10;
-    return ret;
+    return;
 }
 
 /* I32 test_const_return() {
@@ -36,9 +36,6 @@ I32 main() {
     U8 lol = 10;
     res = test_type(res, lol);
     test_void();
-    U0 pizda = 10;
-    U0 huy = 10;
-    /* pizda + huy; */
     return res;
 }
 

@@ -50,45 +50,36 @@ uint16_t test_return() {
 
 void test_void() {
 	int32_t t11;
-	int32_t t12;
 	int32_t ret;
 	t11 = 10;
 	ret = t11;
-	t12 = ret;
-	return t12;
+	return ;
 }
 
 int32_t main() {
+	int32_t t12;
 	int32_t t13;
 	int32_t t14;
 	int32_t t15;
 	int32_t t16;
 	int32_t t17;
-	int32_t t18;
-	uint8_t t19;
-	void t20;
-	int32_t t21;
-	int32_t t22;
+	uint8_t t18;
+	void t19;
+	int32_t t20;
 	int32_t res;
 	uint8_t lol;
-	void pizda;
+	t12 = 10;
 	t13 = 10;
-	t14 = 10;
-	t15 = t13 + t14;
-	res = t15;
-	t16 = 10;
-	lol = t16;
-	t18 = res;
-	t19 = lol;
-	t17 = test_type(	t18	, t19);
-	res = t17;
-	t20();
-	t21 = 10;
-	pizda = t21;
-	t22 = res;
-
-	pizda + t22;
-
-	return t22;
+	t14 = t12 + t13;
+	res = t14;
+	t15 = 10;
+	lol = t15;
+	t17 = res;
+	t18 = lol;
+	t16 = test_type(	t17	, t18);
+	res = t16;
+	test_void();
+	t20 = res;
+	return t20;
 }
 

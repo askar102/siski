@@ -179,7 +179,10 @@ void TacGenVisitor::visit(ReturnStatement& n)
     Instr i;
     i.tag = INSTR_TAG::RET;
     if (n.get_return_val())
+    {
         i.lhs = gen_expr(n.get_return_val());
+    }
+        
     push_to_func_body(i);
 }
 

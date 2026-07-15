@@ -224,7 +224,7 @@ std::unique_ptr<ReturnStatement> Parser::ParseReturnStmt()
     
     std::unique_ptr<ExpressionNode> expr = nullptr;
 
-    if (!Match(TokenType::SEMICOLON)) {
+    if (!Check(TokenType::SEMICOLON)) {
         expr = ParseExpression();
     }
 

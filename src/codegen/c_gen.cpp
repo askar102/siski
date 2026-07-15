@@ -121,8 +121,16 @@
                     
                     case INSTR_TAG::CALL: 
                     {
-                        puts_ins(file, "\t{} = {}(", i.result.name, i.name);
-
+                        // void check
+                        if (i.result.data_type == "U0") 
+                        {
+                            puts_ins(file, "\t{}(", i.result.name, i.name);
+                        }
+                        else
+                        {
+                            puts_ins(file, "\t{} = {}(", i.result.name, i.name);
+                        }
+                        
                         for (size_t k = 0; k < i.args.size(); ++k)
                         {
                             puts_ins(file, "\t{}{}", k ? ", " : "", val_to_c(i.args[k]));

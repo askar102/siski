@@ -86,6 +86,14 @@ void AirGenerator::type_check()
 
                 case INSTR_TAG::DECL_VAR: 
                 {
+                    if (i.decl_type == "U0")
+                    {
+                        throw std::runtime_error(std::format(
+                                "AIR: DECL_VAR: Variable '{}' has incomplete type '{}'",
+                                i.name, i.decl_type
+                        ));
+                    }
+
                     var_types[i.name] = i.decl_type;
                     break;
                 }
@@ -128,7 +136,7 @@ void AirGenerator::type_check()
                     if (!var_types.count(i.name))
                     {
                         throw std::runtime_error(std::format(
-                                "AIR: CALL: STORE: Assignment to an undeclared variable '{}'",
+                                "AIR: STORE: Assignment to an undeclared variable '{}'",
                                 i.name
                         ));
                     }

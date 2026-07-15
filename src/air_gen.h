@@ -67,7 +67,7 @@ private:
         {
             return false;
         }
-        
+
         return true;
     }
 

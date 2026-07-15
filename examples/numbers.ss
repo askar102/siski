@@ -26,15 +26,19 @@ U0 test_void() {
     return ret;
 }
 
-I8 test_const_return() {
-    return -1;
-}
+/* I32 test_const_return() {
+    I8 ret = 10;
+    return ret;
+} */
 
 I32 main() {
     I32 res = 10 + 10;
     U8 lol = 10;
     res = test_type(res, lol);
     test_void();
+    U0 pizda = 10;
+    U0 huy = 10;
+    /* pizda + huy; */
     return res;
 }
 

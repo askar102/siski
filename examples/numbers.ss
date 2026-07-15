@@ -32,10 +32,11 @@ U0 test_void() {
 } */
 
 I32 main() {
-    I32 res = 10 + 10;
-    U8 lol = 10;
-    res = test_type(res, lol);
-    test_void();
-    return res;
+    U8 var1 = 1;
+    I32 var2 = var1;
+
+    I64 var3 = var1 + var2;
+
+    return 10;
 }
 

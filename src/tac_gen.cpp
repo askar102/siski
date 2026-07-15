@@ -260,6 +260,7 @@ void TacGenVisitor::visit(VariableDeclNode& n)
     i.decl_type = n.get_type()->get_type_name();
     if (n.get_init()) 
     {
+        i.has_init = true;
         i.lhs = gen_expr(n.get_init());
     }
     push_to_func_body(i);

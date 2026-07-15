@@ -142,7 +142,7 @@ void CGen::generate(const AirProgram& prog)
                     
                     for (size_t k = 0; k < i.args.size(); ++k)
                     {
-                        puts_ins(file, "\t{}{}", k ? ", " : "", val_to_c(i.args[k]));
+                        puts_ins(file, "{}{}", k ? ", " : "", val_to_c(i.args[k]));
                     }
 
                     puts_ins(file, ");\n");

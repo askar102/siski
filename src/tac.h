@@ -44,6 +44,7 @@ struct Instr {
     std::string op; 
     std::string name; 
     std::vector<Value> args;
+    bool has_init = false;
 
     std::string decl_type;
 };

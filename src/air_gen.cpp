@@ -96,7 +96,30 @@ void AirGenerator::type_check()
                     }
 
                     var_types[i.name] = i.decl_type;
-                    break;
+
+                    if (i.has_init) {
+                        // for const value (r-value)
+                        int64_t cv;
+                        if (const_val(i.lhs, const_temps, cv)) 
+                        {
+                            if (!can_fit(cv, i.decl_type))
+                            {
+                                throw std::runtime_error(std::format(
+                                    "AIR: DECL_VAR: constant {} doesn't fit into '{}'", cv, i.decl_type));
+                            }
+                                
+                            break;
+                        }
+
+                        // for non-const value (like vars)
+                        std::string init_type = operand_type(i.lhs, temp_types, var_types);
+                        if (init_type != i.decl_type) {
+                            throw std::runtime_error(std::format(
+                                "AIR: DECL_VAR: cannot init '{}' (type '{}') with value of type '{}'",
+                                i.name, i.decl_type, init_type));
+                        }
+                        break;
+                    }
                 }
 
                 case INSTR_TAG::CONST:
@@ -120,13 +143,45 @@ void AirGenerator::type_check()
                     std::string type_op1 = operand_type(i.lhs, temp_types, var_types);
                     std::string type_op2 = operand_type(i.rhs, temp_types, var_types);
 
+                    int64_t lc, rc;
+                    bool l_const = const_val(i.lhs, const_temps, lc);
+                    bool r_const = const_val(i.rhs, const_temps, rc);
+
                     if (type_op1 == type_op2)
                     {
                         i.result.data_type = type_op1;
                         temp_types[i.result.name] = type_op1;
                     }
-                    else {
-                        type_err(type_op1, type_op2);
+
+                    else if (l_const && !r_const)
+                    {
+                        if (!can_fit(lc, type_op2))
+                        {
+                            throw std::runtime_error(std::format(
+                                "AIR: BINOP: constant {} doesn't fit into '{}'", lc, type_op2));
+                        }
+                            
+                        i.result.data_type = type_op2;
+                        temp_types[i.result.name] = type_op2;
+                    }
+
+                    else if (r_const && !l_const)
+                    {
+                        if (!can_fit(rc, type_op1))
+                        {
+                            throw std::runtime_error(std::format(
+                                "AIR: BINOP: constant {} doesn't fit into '{}'", rc, type_op1));
+                        }
+                        i.result.data_type = type_op1;
+                        temp_types[i.result.name] = type_op1;
+                    }
+
+                    else 
+                    {
+                        throw std::runtime_error(std::format(
+                                "AIR: BINOP: I cannot calculate the value ('{}' aka '{}') {} ('{}' aka '{}')",
+                                lc, type_op1, i.op, rc, type_op2
+                            ));
                     }
             
                     break;
@@ -146,6 +201,30 @@ void AirGenerator::type_check()
 
                     std::string temp_type = operand_type(i.lhs, temp_types, var_types);
 
+                    // integral fit check
+                    bool is_const = (i.lhs.type == VALUE_TYPE::CONST);
+                    int64_t cval = 0;
+                    if (is_const) 
+                    {
+                        cval = i.lhs.constVal;
+                    } 
+                    else if (i.lhs.type == VALUE_TYPE::TEMP && const_temps.count(i.lhs.name)) 
+                    {
+                        is_const = true;
+                        cval = const_temps[i.lhs.name];
+                    }
+
+                    if (is_const)
+                    {
+                        if (!can_fit(cval, var_type))
+                        {
+                            throw std::runtime_error(std::format(
+                            "AIR: STORE: {}(): constant {} doesn't fit into '{}'.",
+                                fn.name, cval, var_type)
+                            );
+                        }
+                        break;
+                    }
                     
 
                     if (var_type != temp_type)
@@ -205,15 +284,15 @@ void AirGenerator::type_check()
 
                 case INSTR_TAG::RET: 
                 {
-                    // FIXME: idk about this, 'return;' statement is not working (parser)
                     if (fn.retType == "U0") 
                     {
-                        printf("\e[1;36mPARSE WARNING:\e[0m AIR: RET: %s(): Is function return type is %s, it's not released normally yet.\n",
-                            fn.name.c_str(), fn.retType.c_str()
-                        );
+                        // printf("\e[1;36mPARSE WARNING:\e[0m AIR: RET: %s(): Is function return type is %s, it's not released normally yet.\n",
+                        //     fn.name.c_str(), fn.retType.c_str()
+                        // );
                         break;
                     }
 
+                    // integral fit check
                     bool is_const = (i.lhs.type == VALUE_TYPE::CONST);
                     int64_t cval = 0;
                     if (is_const) 

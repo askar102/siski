@@ -71,6 +71,7 @@ private:
         return true;
     }
 
+    // забирает значение константы
     bool const_val(const Value& v, std::map<std::string,int64_t>& const_temps, int64_t& out) {
         if (v.type == VALUE_TYPE::CONST) { 
             out = v.constVal; 

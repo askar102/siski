@@ -26,8 +26,8 @@ U0 test_void() {
     return ret;
 }
 
-U8 test_const_return() {
-    return 5;
+I8 test_const_return() {
+    return -1;
 }
 
 I32 main() {

@@ -73,6 +73,7 @@ void AirGenerator::type_check()
     {
         std::map<std::string, std::string> var_types;
         std::map<std::string, std::string> temp_types;
+        std::map<std::string, int64_t> const_temps;
 
         for (auto& p : fn.params)
         {
@@ -93,6 +94,7 @@ void AirGenerator::type_check()
                 {
                     i.result.data_type = "I32";
                     temp_types[i.result.name] = "I32";
+                    const_temps[i.result.name] = i.lhs.constVal;
                     break;
                 }
 
@@ -135,6 +137,8 @@ void AirGenerator::type_check()
 
                     std::string temp_type = operand_type(i.lhs, temp_types, var_types);
 
+                    
+
                     if (var_type != temp_type)
                     {
                         // type_err(var_type, temp_type);
@@ -148,6 +152,14 @@ void AirGenerator::type_check()
                     std::string t = operand_type(i.lhs, temp_types, var_types);
                     i.result.data_type = t;
                     temp_types[i.result.name] = t;
+
+                    int64_t cv;
+                    if (const_val(i.lhs, const_temps, cv))
+                    {   
+                        int64_t result_val = (i.op == "-") ? -cv : cv;
+                        const_temps[i.result.name] = result_val; 
+                    }
+
                     break;
                 }
 
@@ -184,8 +196,6 @@ void AirGenerator::type_check()
 
                 case INSTR_TAG::RET: 
                 {
-                    std::string ret_type = operand_type(i.lhs, temp_types, var_types);
-
                     // FIXME: idk about this, 'return;' statement is not working (parser)
                     if (fn.retType == "U0") 
                     {
@@ -195,10 +205,31 @@ void AirGenerator::type_check()
                         break;
                     }
 
-                    // if (i.lhs.type == VALUE_TYPE::CONST)
-                    // {
-                    //     if (i.lhs.constVal)
-                    // }
+                    bool is_const = (i.lhs.type == VALUE_TYPE::CONST);
+                    int64_t cval = 0;
+                    if (is_const) 
+                    {
+                        cval = i.lhs.constVal;
+                    } 
+                    else if (i.lhs.type == VALUE_TYPE::TEMP && const_temps.count(i.lhs.name)) 
+                    {
+                        is_const = true;
+                        cval = const_temps[i.lhs.name];
+                    }
+
+                    if (is_const)
+                    {
+                        if (!can_fit(cval, fn.retType))
+                        {
+                            throw std::runtime_error(std::format(
+                            "AIR: RET: {}(): constant {} doesn't fit into '{}'.",
+                                fn.name, cval, fn.retType)
+                            );
+                        }
+                        break;
+                    }
+
+                    std::string ret_type = operand_type(i.lhs, temp_types, var_types);
 
                     if (ret_type != fn.retType)
                     {

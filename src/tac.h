@@ -29,7 +29,7 @@ struct Value {
     std::string name;
     int32_t constVal = 0;
 
-    std::string data_type = ""; // idk
+    std::string data_type = "???"; // idk
 
     static Value Temp(std::string n) { return {VALUE_TYPE::TEMP, std::move(n), 0}; }
     static Value Var(std::string n)  { return {VALUE_TYPE::VAR,  std::move(n), 0}; }

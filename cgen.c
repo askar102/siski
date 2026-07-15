@@ -4,6 +4,7 @@ int32_t loop(int32_t i);
 int32_t test_type(int32_t a, uint8_t b);
 uint16_t test_return();
 void test_void();
+int8_t test_const_return();
 int32_t main();
 
 int32_t loop(int32_t i) {
@@ -58,30 +59,38 @@ void test_void() {
 	return t12;
 }
 
-int32_t main() {
+int8_t test_const_return() {
 	int32_t t13;
 	int32_t t14;
+	t13 = 1;
+	t14 = -t13;
+	return t14;
+}
+
+int32_t main() {
 	int32_t t15;
 	int32_t t16;
 	int32_t t17;
 	int32_t t18;
-	uint8_t t19;
-	void t20;
-	int32_t t21;
+	int32_t t19;
+	int32_t t20;
+	uint8_t t21;
+	void t22;
+	int32_t t23;
 	int32_t res;
 	uint8_t lol;
-	t13 = 10;
-	t14 = 10;
-	t15 = t13 + t14;
-	res = t15;
+	t15 = 10;
 	t16 = 10;
-	lol = t16;
-	t18 = res;
-	t19 = lol;
-	t17 = test_type(	t18	, t19);
+	t17 = t15 + t16;
 	res = t17;
-	t20 = test_void();
-	t21 = res;
-	return t21;
+	t18 = 10;
+	lol = t18;
+	t20 = res;
+	t21 = lol;
+	t19 = test_type(	t20	, t21);
+	res = t19;
+	t22 = test_void();
+	t23 = res;
+	return t23;
 }
 

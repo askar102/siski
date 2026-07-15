@@ -83,7 +83,7 @@ private:
         puts_ins(file, "){}\n", end_with);
     }
 
-    std::string to_c_type(const std::string& t)
+    constexpr std::string_view to_c_type(const std::string_view t)
     {
         if (t == "I8")  return "int8_t";
         if (t == "I16") return "int16_t";

@@ -23,11 +23,12 @@ int main() {
     try {
         Parser par(lex.GetTokens());
         auto ast = par.ParseProgram();
-        
+
         // PrintAst printer;
         // ast->accept(printer);
         TacGenVisitor tac_gen;
         TacProgram tac = tac_gen.gen(*ast);
+
         TacGenVisitor::dump_tac(tac);
 
         LOG(" [START OF AIR]\n");

@@ -31,12 +31,20 @@ U0 test_void() {
     return ret;
 } */
 
+// пишем через __, так как идея добавления кастомных аттрибутов
+%__MNE_POHUI_NA_TYPES // soft version
+%__MNE_POHUI_NA_TYPES__SOFT // soft version явно: попытается преобразовать встроенные типы по типу int
+%__MNE_POHUI_NA_TYPES__HARD // полность забеьет
+I32 foo(I16 t) {
+    I32 var2 = t;
+    return t;
+}
+
 I32 main() {
     U8 var1 = 1;
     I32 var2 = var1;
 
-    I64 var3 = var1 + var2;
-
+    
     return 10;
 }
 
